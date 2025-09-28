@@ -30,18 +30,22 @@ python train.py --device cuda
 
 #### Hydra-based Training (Recommended)
 ```bash
-# Automatic GPU detection (recommended)
+# Automatic GPU detection with default Adam optimizer (recommended)
 python train_hydra.py model=collaborative train=fast
 
-# Force GPU usage
-python train_hydra.py device=cuda model=deep_cf train=production
+# Force GPU usage with SGD optimizer
+python train_hydra.py device=cuda optimizer=sgd model=deep_cf train=production
 
-# Multiple model comparison on GPU
-python train_hydra.py -m model=collaborative,deep_cf,hybrid
+# Multiple model comparison on GPU with different optimizers
+python train_hydra.py -m model=collaborative,deep_cf,hybrid optimizer=adam
 
-# Hyperparameter sweep on GPU
-python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256,512
+# Hyperparameter sweep including optimizer comparison
+python train_hydra.py -m optimizer=adam,sgd train.learning_rate=0.001,0.01,0.1 train.batch_size=256,512
 ```
+
+**Optimizer Configuration**: The system now supports simple, effective optimizers:
+- **Adam**: Adaptive learning rates (default, recommended for most cases)
+- **SGD**: Simple gradient descent with momentum support
 
 **Output Structure**: All multirun experiments are saved in `outputs/movie_recommendation/multirun/` with organized subdirectories for each job.
 

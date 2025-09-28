@@ -88,7 +88,7 @@ python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256
 # Use Adam optimizer (default)
 python train_hydra.py model=collaborative
 
-# Use SGD optimizer with momentum
+# Use SGD optimizer with momentum  
 python train_hydra.py optimizer=sgd model=collaborative
 
 # Compare Adam vs SGD
@@ -99,16 +99,20 @@ python train_hydra.py -m optimizer=adam,sgd model=collaborative
 - **adam**: Adam optimizer with adaptive learning rates (recommended for most cases)
 - **sgd**: SGD with momentum support (simple and effective)
 
-### **Direct Usage (Similar to Loss/Metrics Pattern)**
+### **Direct Usage (Following Loss/Metrics Pattern)**
 ```python
-from optimizers import RecommenderOptimizer, create_optimizer
+from optimizers import RecommenderOptimizer, AdamOptimizer, SGDOptimizer, create_optimizer
 import torch
 
-# Method 1: Using RecommenderOptimizer class
+# Method 1: Using RecommenderOptimizer factory class (similar to RecommenderLoss)
 optimizer_factory = RecommenderOptimizer("adam")
 adam_optimizer = optimizer_factory.create_optimizer(model, lr=0.001, betas=(0.9, 0.999))
 
-# Method 2: Using factory function
+# Method 2: Using specific optimizer classes directly (similar to BCELoss, MSELoss)
+adam_optimizer = AdamOptimizer(lr=0.001, betas=(0.9, 0.999))
+sgd_optimizer = SGDOptimizer(lr=0.01, momentum=0.9)
+
+# Method 3: Using factory function
 sgd_optimizer = create_optimizer(model, "sgd", lr=0.01, momentum=0.9)
 ```
 
@@ -201,9 +205,9 @@ reco_app/
 │   ├── __init__.py                   # Package init
 │   └── metric.py                     # Metrics implementations
 │
-├── optimizers/                       # Simple optimizer implementations ⚡
+├── optimizers/                       # Optimizer implementations (following loss/metric pattern) ⚡
 │   ├── __init__.py                   # Package initialization  
-│   └── optimizer.py                  # Adam and SGD optimizer classes
+│   └── optimizer.py                  # RecommenderOptimizer, AdamOptimizer, SGDOptimizer classes
 │
 ├── utils/                            # Utilities 🛠️
 │   ├── __init__.py                   # Package init
@@ -330,6 +334,43 @@ results = metrics.compute()
 print(f"RMSE: {results['rmse']:.4f}, MAE: {results['mae']:.4f}")
 ```
 
+## ⚡ Optimizer System
+
+### **Available Optimizers (Following Loss/Metrics Pattern)**
+- **AdamOptimizer**: Adam optimizer with adaptive learning rates (recommended for most cases)
+- **SGDOptimizer**: SGD with momentum support (simple and effective)
+- **RecommenderOptimizer**: Factory class for creating optimizers (similar to RecommenderLoss)
+
+### **Usage Pattern (Consistent with Losses/Metrics)**
+```python
+from optimizers import RecommenderOptimizer, AdamOptimizer, SGDOptimizer, create_optimizer
+
+# Method 1: Factory class approach (similar to RecommenderLoss)
+optimizer_factory = RecommenderOptimizer("adam")
+optimizer = optimizer_factory.create_optimizer(model, lr=0.001)
+
+# Method 2: Direct class instantiation (similar to BCELoss, MSELoss)
+adam_optimizer = AdamOptimizer(lr=0.001, betas=(0.9, 0.999))
+sgd_optimizer = SGDOptimizer(lr=0.01, momentum=0.9, weight_decay=1e-4)
+
+# Method 3: Factory function
+optimizer = create_optimizer(model, "sgd", lr=0.01, momentum=0.9)
+```
+
+### **Integration with Training**
+```python
+# In train_hydra.py
+from optimizers import RecommenderOptimizer
+
+def create_optimizer(model: nn.Module, cfg: DictConfig) -> torch.optim.Optimizer:
+    optimizer_factory = RecommenderOptimizer(cfg.optimizer.name)
+    return optimizer_factory.create_optimizer(
+        model=model, 
+        lr=cfg.train.learning_rate,
+        **cfg.optimizer.params
+    )
+```
+
 ## 🎯 Loss Functions
 
 ### **Available Losses**
@@ -452,6 +493,27 @@ class NewRecommenderModel(BaseModel):
         
     def predict(self, ...):
         # Prediction logic
+```
+
+### **Adding New Optimizers**
+```python
+# Add to optimizers/optimizer.py (following the same pattern as losses/metrics)
+class CustomOptimizer:
+    def __init__(self, lr=0.001, **kwargs):
+        self.lr = lr
+        self.kwargs = kwargs
+    
+    def create_optimizer(self, model, **extra_kwargs):
+        # Combine initialization and runtime parameters
+        params = {**self.kwargs, **extra_kwargs}
+        return torch.optim.CustomOptim(model.parameters(), lr=self.lr, **params)
+
+# Register in RecommenderOptimizer class
+OPTIMIZER_MAPPING = {
+    "adam": AdamOptimizer,
+    "sgd": SGDOptimizer,
+    "custom": CustomOptimizer,  # Add your new optimizer here
+}
 ```
 
 ### **Adding New Losses**

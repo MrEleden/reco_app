@@ -63,6 +63,10 @@ reco_app/
 │   ├── __init__.py        # Package init ✅
 │   └── metric.py          # Metrics implementations ✅
 │
+├── optimizers/            # Optimizer implementations (following loss/metric pattern) ✅
+│   ├── __init__.py        # Package init ✅
+│   └── optimizer.py       # RecommenderOptimizer, AdamOptimizer, SGDOptimizer ✅
+│
 ├── utils/                 # Utilities ✅
 │   ├── __init__.py        # Package init ✅
 │   ├── logger.py          # Logging utilities ✅
@@ -93,6 +97,7 @@ reco_app/
 - **data/**: Full data handling with datasets, loaders, and transforms
 - **losses/**: Comprehensive loss functions (BCE, MSE, BPR, Ranking)
 - **metrics/**: Complete evaluation metrics (RMSE, MAE, Precision@K, etc.)
+- **optimizers/**: Optimizer implementations following loss/metric pattern (Adam, SGD)
 - **utils/**: Custom made utilities (Logger, Timer, Plotters, Helpers)
 - **train.py & train_simple.py**: Working training scripts
 - **train_hydra.py**: Advanced Hydra-based training system ✅
@@ -156,6 +161,7 @@ from models import (
 ✅ **Complete Data Pipeline**: Datasets, loaders, transforms  
 ✅ **5 Loss Functions**: BCE, MSE, BPR, Ranking, Configurable  
 ✅ **6 Evaluation Metrics**: RMSE, MAE, Precision@K, Recall@K, NDCG, F1  
+✅ **2 Simple Optimizers**: Adam (recommended), SGD with momentum ✅  
 ✅ **Custom Made Utils**: Logging, timing, visualization, helpers  
 ✅ **Configuration Management**: Traditional + Hydra systems  
 ✅ **Training Scripts**: Main, simplified, and Hydra-based versions  

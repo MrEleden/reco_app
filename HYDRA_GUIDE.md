@@ -21,6 +21,9 @@ conf/
 │   ├── content_based.yaml  # Genre-based model
 │   ├── hybrid.yaml         # Combined approach  
 │   └── deep_cf.yaml        # Deep neural network
+├── optimizer/               # Optimizer configurations
+│   ├── adam.yaml           # Adam optimizer settings
+│   └── sgd.yaml            # SGD optimizer settings
 ├── train/                   # Training configurations
 │   ├── default.yaml        # Standard training
 │   ├── fast.yaml           # Quick experiments
@@ -36,13 +39,25 @@ conf/
 
 ### **Basic Training**
 ```bash
-# Train with default settings (Collaborative Filtering, 20 epochs)
+# Train with default settings (Collaborative Filtering, 20 epochs, Adam optimizer)
 python train_hydra.py
 
-# Train specific model
-python train_hydra.py model=deep_cf
-python train_hydra.py model=hybrid
+# Train specific model with specific optimizer
+python train_hydra.py model=deep_cf optimizer=sgd
+python train_hydra.py model=hybrid optimizer=adam
 python train_hydra.py model=content_based
+```
+
+### **Optimizer Configuration**
+```bash
+# Use Adam optimizer (default)
+python train_hydra.py model=collaborative optimizer=adam
+
+# Use SGD optimizer with momentum
+python train_hydra.py model=deep_cf optimizer=sgd
+
+# Compare optimizers
+python train_hydra.py -m optimizer=adam,sgd model=collaborative
 ```
 
 ### **Override Parameters**
@@ -116,8 +131,18 @@ multirun/movie_recommendation/2025-09-28_18-30-45/
 ```bash
 python train_hydra.py -m \
   model=collaborative,content_based,hybrid,deep_cf \
+  optimizer=adam \
   train.epochs=50 \
   train.learning_rate=0.005 \
+  train.batch_size=256
+```
+
+### **Optimizer Comparison**
+```bash
+python train_hydra.py -m \
+  optimizer=adam,sgd \
+  model=deep_cf \
+  train.epochs=30 \
   train.batch_size=256
 ```
 
@@ -125,6 +150,7 @@ python train_hydra.py -m \
 ```bash
 python train_hydra.py -m \
   model=deep_cf \
+  optimizer=adam,sgd \
   model.embedding_dim=32,64,128 \
   train.learning_rate=0.001,0.01,0.1 \
   train.dropout=0.2,0.4,0.6
@@ -146,12 +172,17 @@ python train_hydra.py -m \
 - `hybrid`: Combined collaborative + content
 - `deep_cf`: Deep neural collaborative filtering
 
+### **Available Optimizers** 
+- `adam`: Adam optimizer with adaptive learning rates (default)
+- `sgd`: SGD with momentum support (simple and effective)
+
 ### **Training Configurations**
 - `default`: 20 epochs, balanced settings
 - `fast`: 10 epochs, quick experiments  
 - `production`: 100 epochs, thorough training
 
 ### **Key Parameters**
+- `optimizer`: Optimizer type (adam/sgd)
 - `train.epochs`: Number of training epochs
 - `train.batch_size`: Training batch size
 - `train.learning_rate`: Learning rate

@@ -5,10 +5,15 @@
 ```
 reco_app/
 ├── README.md                 # Project documentation ✅
-├── config.py                # Configuration settings ✅
 ├── train.py                 # Main training script ✅  
 ├── train_simple.py          # Simplified training demo ✅
 ├── requirements.txt         # Dependencies ✅
+│
+├── config/                  # Configuration management ✅
+│   ├── __init__.py         # Main config imports ✅
+│   ├── data_config.py      # Data processing settings ✅
+│   ├── model_config.py     # Model architecture configs ✅
+│   └── train_config.py     # Training hyperparameters ✅
 │
 ├── models/                  # Model architectures ✅
 │   ├── __init__.py         # Package initialization ✅

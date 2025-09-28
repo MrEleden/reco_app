@@ -4,39 +4,30 @@ Configuration file for the movie recommendation system.
 
 import os
 
+# Import all configurations
+from .data_config import *
+from .model_config import *
+from .train_config import *
+
+# Global settings
+RANDOM_SEED = 42
+DEVICE = "auto"  # "auto", "cpu", "cuda"
+
+# Project paths
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RESULTS_DIR = os.path.join(PROJECT_ROOT, "results")
+LOGS_DIR = os.path.join(PROJECT_ROOT, "logs")
+
+# Ensure directories exist
+os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(os.path.join(RESULTS_DIR, "models"), exist_ok=True)
+os.makedirs(os.path.join(RESULTS_DIR, "plots"), exist_ok=True)
+
+# Legacy compatibility (for existing imports)
 # Data configuration
 DATA_DIR = "data"
 MOVIES_FILE = os.path.join(DATA_DIR, "raw", "movies.csv")
 RATINGS_FILE = os.path.join(DATA_DIR, "raw", "ratings.csv")
 LINKS_FILE = os.path.join(DATA_DIR, "raw", "links.csv")
 TAGS_FILE = os.path.join(DATA_DIR, "raw", "tags.csv")
-
-# Model configuration
-MODEL_CONFIG = {
-    "collaborative": {
-        "embedding_dim": 50,
-        "dropout": 0.2,
-        "hidden_dims": [128, 64],
-    }
-}
-
-# Training configuration
-TRAIN_CONFIG = {
-    "batch_size": 256,
-    "learning_rate": 0.01,
-    "weight_decay": 1e-4,
-    "epochs": 20,
-    "val_ratio": 0.2,
-    "patience": 5,
-}
-
-# Paths
-RESULTS_DIR = "results"
-LOGS_DIR = "logs"
-MODELS_DIR = os.path.join(RESULTS_DIR, "models")
-
-# Device
-DEVICE = "cuda" if os.path.exists("/usr/local/cuda") else "cpu"
-
-# Random seed for reproducibility
-RANDOM_SEED = 42

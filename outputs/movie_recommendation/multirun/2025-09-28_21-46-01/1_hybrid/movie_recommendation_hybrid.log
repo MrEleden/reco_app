@@ -1,0 +1,111 @@
+[2025-09-28 21:48:14,521][__main__][INFO] - Configuration:
+[2025-09-28 21:48:14,524][__main__][INFO] - model:
+  name: hybrid
+  type: HybridModel
+  embedding_dim: 50
+  genre_embedding_dim: 32
+  collaborative_weight: 0.7
+  content_weight: 0.3
+  fusion_dims:
+  - 256
+  - 128
+  dropout: 0.2
+  description: Combined collaborative and content-based approach
+train:
+  name: default
+  batch_size: 256
+  learning_rate: 0.01
+  weight_decay: 0.0001
+  epochs: 20
+  patience: 5
+  min_delta: 0.0001
+  scheduler:
+    type: reduce_on_plateau
+    factor: 0.5
+    patience: 3
+    min_lr: 1.0e-06
+    verbose: true
+  loss:
+    type: bce
+    margin: 1.0
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@10
+  - recall@10
+  - ndcg@10
+  top_k:
+  - 5
+  - 10
+  - 20
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+mlflow:
+  tracking_uri: null
+  experiment_name: ${experiment.name}
+  enable: true
+  log_models: true
+  log_artifacts: true
+
+[2025-09-28 21:48:14,657][__main__][INFO] - MLflow run started: 85d8326d55e44ba2b9fdec52048a8436
+[2025-09-28 21:48:14,658][__main__][INFO] - Using device: cuda
+[2025-09-28 21:48:14,697][__main__][INFO] - Loading data...
+[2025-09-28 21:48:14,746][__main__][INFO] - Loaded 100836 user-movie interactions
+[2025-09-28 21:48:14,746][__main__][INFO] - Users: 610, Movies: 9742
+[2025-09-28 21:48:15,803][__main__][INFO] - Creating model: HybridModel
+[2025-09-28 21:48:15,966][__main__][INFO] - Model created with 549,154 parameters
+[2025-09-28 21:48:16,038][__main__][INFO] - Starting training...
+[2025-09-28 21:48:28,140][__main__][INFO] - Epoch 1/20: Train Loss: 0.3750, Val Loss: 0.3588
+[2025-09-28 21:48:28,140][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.33869795737319336), 'mae': 0.2322721630334854, 'accuracy': np.float64(0.844451554226266), 'precision': np.float64(0.6403456358873006), 'recall': np.float64(0.28215565951758914), 'f1': np.float64(0.39171141788736746)}
+[2025-09-28 21:48:28,141][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3326842786377497), 'mae': 0.2257690280675888, 'accuracy': np.float64(0.8457057376695482), 'precision': np.float64(0.5831270627062707), 'recall': np.float64(0.4582218980468433), 'f1': np.float64(0.5131835715906512)}
+[2025-09-28 21:48:28,528][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-28 21:48:40,506][__main__][INFO] - Epoch 2/20: Train Loss: 0.3493, Val Loss: 0.3525
+[2025-09-28 21:48:40,506][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32797269465312817), 'mae': 0.2174062430858612, 'accuracy': np.float64(0.8515118072306481), 'precision': np.float64(0.6373413198107749), 'recall': np.float64(0.3792656499989874), 'f1': np.float64(0.4755459624174708)}
+[2025-09-28 21:48:40,506][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3304387441950464), 'mae': 0.22047576308250427, 'accuracy': np.float64(0.8455906678365434), 'precision': np.float64(0.5850296861747244), 'recall': np.float64(0.44719993516492423), 'f1': np.float64(0.5069128657388269)}
+[2025-09-28 21:48:40,930][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-28 21:48:52,160][__main__][INFO] - Epoch 3/20: Train Loss: 0.3446, Val Loss: 0.3519
+[2025-09-28 21:48:52,160][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32629937974804807), 'mae': 0.2149428427219391, 'accuracy': np.float64(0.8518281525791133), 'precision': np.float64(0.6337497131241598), 'recall': np.float64(0.39147781355691924), 'f1': np.float64(0.4839880818247828)}
+[2025-09-28 21:48:52,160][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.330442160129606), 'mae': 0.2153749018907547, 'accuracy': np.float64(0.8456338190239201), 'precision': np.float64(0.587251601693995), 'recall': np.float64(0.4382851122457249), 'f1': np.float64(0.501949136810841)}
+[2025-09-28 21:48:52,556][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-28 21:49:04,140][__main__][INFO] - Epoch 4/20: Train Loss: 0.3430, Val Loss: 0.3493
+[2025-09-28 21:49:04,141][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3258697229542677), 'mae': 0.21358418464660645, 'accuracy': np.float64(0.8521013599255151), 'precision': np.float64(0.6412763767370047), 'recall': np.float64(0.37851631326326024), 'f1': np.float64(0.4760449300832888)}
+[2025-09-28 21:49:04,141][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3291373643729461), 'mae': 0.2248791754245758, 'accuracy': np.float64(0.8475900061850036), 'precision': np.float64(0.6000918800964741), 'recall': np.float64(0.4234540886619661), 'f1': np.float64(0.49653140739332896)}
+[2025-09-28 21:49:04,585][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-28 21:49:16,539][__main__][INFO] - Epoch 5/20: Train Loss: 0.3424, Val Loss: 0.3474
+[2025-09-28 21:49:16,540][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3257616741601907), 'mae': 0.21325604617595673, 'accuracy': np.float64(0.8524069207734644), 'precision': np.float64(0.6469549244029956), 'recall': np.float64(0.37090143184073554), 'f1': np.float64(0.47149385338224886)}
+[2025-09-28 21:49:16,540][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32777545112297757), 'mae': 0.21020613610744476, 'accuracy': np.float64(0.8489420767228112), 'precision': np.float64(0.6188381420623625), 'recall': np.float64(0.387632709295729), 'f1': np.float64(0.47667929041259716)}
+[2025-09-28 21:49:17,095][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-28 21:49:29,170][__main__][INFO] - Epoch 6/20: Train Loss: 0.3425, Val Loss: 0.3481
+[2025-09-28 21:49:29,171][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32572943552118144), 'mae': 0.21308648586273193, 'accuracy': np.float64(0.851874885414682), 'precision': np.float64(0.6494841589229531), 'recall': np.float64(0.3595398667395751), 'f1': np.float64(0.46285408872260825)}
+[2025-09-28 21:49:29,171][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3287500037530529), 'mae': 0.21447749435901642, 'accuracy': np.float64(0.8464249241258288), 'precision': np.float64(0.6013167520117044), 'recall': np.float64(0.399708242159008), 'f1': np.float64(0.4802103110851467)}

@@ -1,0 +1,2 @@
+- model=collaborative
+- train.epochs=1

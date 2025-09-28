@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/models/m-6ca7247bd348488aa2c0ec3b1ab60d0c/artifacts
+creation_timestamp: 1759091263117
+experiment_id: '289158589426816555'
+last_updated_timestamp: 1759091273691
+model_id: m-6ca7247bd348488aa2c0ec3b1ab60d0c
+model_type: null
+name: model
+source_run_id: d9b297f1a06e4fda98e40f6f8f86ebf7
+status: 2
+status_message: null

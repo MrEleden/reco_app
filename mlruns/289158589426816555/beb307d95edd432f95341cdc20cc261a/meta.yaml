@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/beb307d95edd432f95341cdc20cc261a/artifacts
+end_time: 1759092687388
+entry_point_name: ''
+experiment_id: '289158589426816555'
+lifecycle_stage: active
+run_id: beb307d95edd432f95341cdc20cc261a
+run_name: collaborative_movie_recommendation
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759092682143
+status: 3
+tags: []
+user_id: mavil

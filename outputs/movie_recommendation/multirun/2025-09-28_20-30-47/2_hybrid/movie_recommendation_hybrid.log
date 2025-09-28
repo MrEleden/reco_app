@@ -1,0 +1,81 @@
+[2025-09-28 20:34:58,864][__main__][INFO] - Configuration:
+[2025-09-28 20:34:58,868][__main__][INFO] - model:
+  name: hybrid
+  type: HybridModel
+  embedding_dim: 50
+  genre_embedding_dim: 32
+  collaborative_weight: 0.7
+  content_weight: 0.3
+  fusion_dims:
+  - 256
+  - 128
+  dropout: 0.2
+  description: Combined collaborative and content-based approach
+train:
+  name: default
+  batch_size: 256
+  learning_rate: 0.01
+  weight_decay: 0.0001
+  epochs: 20
+  patience: 5
+  min_delta: 0.0001
+  scheduler:
+    type: reduce_on_plateau
+    factor: 0.5
+    patience: 3
+    min_lr: 1.0e-06
+    verbose: true
+  loss:
+    type: bce
+    margin: 1.0
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@10
+  - recall@10
+  - ndcg@10
+  top_k:
+  - 5
+  - 10
+  - 20
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+
+[2025-09-28 20:34:58,870][__main__][INFO] - Using device: cuda
+[2025-09-28 20:34:58,872][__main__][INFO] - Loading data...
+[2025-09-28 20:34:58,993][__main__][INFO] - Loaded 100836 user-movie interactions
+[2025-09-28 20:34:58,994][__main__][INFO] - Users: 610, Movies: 9742
+[2025-09-28 20:35:01,018][__main__][INFO] - Creating model: HybridModel
+[2025-09-28 20:35:01,037][__main__][INFO] - Model created with 549,154 parameters
+[2025-09-28 20:35:01,039][__main__][INFO] - Starting training...

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/b6804d23069642738fbd284a06af7161/artifacts
+end_time: 1759088021223
+entry_point_name: ''
+experiment_id: '289158589426816555'
+lifecycle_stage: active
+run_id: b6804d23069642738fbd284a06af7161
+run_name: hybrid_movie_recommendation
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759087974972
+status: 3
+tags: []
+user_id: mavil

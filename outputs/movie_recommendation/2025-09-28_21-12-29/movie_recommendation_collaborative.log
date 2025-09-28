@@ -1,0 +1,92 @@
+[2025-09-28 21:12:29,254][__main__][INFO] - Configuration:
+[2025-09-28 21:12:29,257][__main__][INFO] - model:
+  name: collaborative
+  type: CollaborativeFilteringModel
+  embedding_dim: 50
+  dropout: 0.2
+  bias: true
+  init_mean: 0.0
+  init_std: 0.1
+  description: Matrix factorization with user and movie embeddings
+train:
+  name: default
+  batch_size: 256
+  learning_rate: 0.01
+  weight_decay: 0.0001
+  epochs: 1
+  patience: 5
+  min_delta: 0.0001
+  scheduler:
+    type: reduce_on_plateau
+    factor: 0.5
+    patience: 3
+    min_lr: 1.0e-06
+    verbose: true
+  loss:
+    type: bce
+    margin: 1.0
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@10
+  - recall@10
+  - ndcg@10
+  top_k:
+  - 5
+  - 10
+  - 20
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+mlflow:
+  tracking_uri: null
+  experiment_name: ${experiment.name}
+  enable: true
+  log_models: true
+  log_artifacts: true
+
+[2025-09-28 21:12:35,811][__main__][INFO] - MLflow run started: f493cf1c3fb54e07b67541e10904dad2
+[2025-09-28 21:12:35,874][__main__][INFO] - Using device: cuda
+[2025-09-28 21:12:36,012][__main__][INFO] - Loading data...
+[2025-09-28 21:12:36,089][__main__][INFO] - Loaded 100836 user-movie interactions
+[2025-09-28 21:12:36,089][__main__][INFO] - Users: 610, Movies: 9742
+[2025-09-28 21:12:37,302][__main__][INFO] - Creating model: CollaborativeFilteringModel
+[2025-09-28 21:12:37,530][__main__][INFO] - Model created with 527,953 parameters
+[2025-09-28 21:12:39,797][__main__][INFO] - Starting training...
+[2025-09-28 21:12:51,702][__main__][INFO] - Epoch 1/1: Train Loss: 0.4243, Val Loss: 0.3994
+[2025-09-28 21:12:51,702][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3624325755324684), 'mae': 0.28287437558174133, 'accuracy': np.float64(0.8290297184885882), 'precision': np.float64(0.7548387096774194), 'recall': np.float64(0.05449905826599429), 'f1': np.float64(0.10165841864682104)}
+[2025-09-28 21:12:51,702][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.34993089777118935), 'mae': 0.26044851541519165, 'accuracy': np.float64(0.8320555787293413), 'precision': np.float64(0.7587822014051522), 'recall': np.float64(0.0787746170678337), 'f1': np.float64(0.14273127753303963)}
+[2025-09-28 21:12:52,179][__main__][INFO] - New best model saved: best_model_collaborative.pth
+[2025-09-28 21:12:52,179][__main__][INFO] - Training completed!
+[2025-09-28 21:12:52,179][__main__][INFO] - Best validation loss: 0.3994
+[2025-09-28 21:13:06,520][__main__][INFO] - MLflow run completed

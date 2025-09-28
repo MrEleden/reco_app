@@ -19,6 +19,14 @@ experiment:
 seed: 42
 device: "auto"  # auto, cpu, cuda
 
+# MLflow settings
+mlflow:
+  tracking_uri: null  # null for local ./mlruns, or set to remote server
+  experiment_name: "${experiment.name}"
+  enable: true
+  log_models: true
+  log_artifacts: true
+
 # Hydra settings
 hydra:
   run:

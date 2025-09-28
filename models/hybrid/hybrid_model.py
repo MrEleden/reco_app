@@ -35,6 +35,9 @@ class HybridModel(BaseModel):
         # Content-based components
         self.genre_embedding = nn.Embedding(n_genres, n_factors)
 
+        # Movie-to-genre mapping (will be set externally)
+        self.register_buffer("movie_genres", torch.zeros(n_movies, n_genres))
+
         # Fusion layer
         self.fusion = nn.Sequential(
             nn.Linear(n_factors * 3, n_factors * 2),
@@ -44,11 +47,15 @@ class HybridModel(BaseModel):
             nn.ReLU(),
             nn.Dropout(dropout),
             nn.Linear(n_factors, 1),
-            nn.Sigmoid(),
+            # Remove sigmoid here since we apply it after adding biases
         )
 
         self.global_bias = nn.Parameter(torch.zeros(1))
         self._init_weights()
+
+    def set_movie_genres(self, movie_genres: torch.Tensor):
+        """Set the movie-genre mapping."""
+        self.movie_genres = movie_genres
 
     def _init_weights(self):
         """Initialize weights."""
@@ -63,14 +70,27 @@ class HybridModel(BaseModel):
                 nn.init.xavier_uniform_(layer.weight)
                 nn.init.zeros_(layer.bias)
 
-    def forward(self, user_ids: torch.Tensor, movie_ids: torch.Tensor, genre_features: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self, user_ids: torch.Tensor, movie_ids: torch.Tensor, genre_features: torch.Tensor = None
+    ) -> torch.Tensor:
         """Forward pass."""
         # Collaborative filtering features
         user_emb = self.user_embedding(user_ids)
         movie_emb = self.movie_embedding(movie_ids)
 
         # Content-based features
-        genre_emb = self.genre_embedding(genre_features).mean(dim=1)
+        if genre_features is None:
+            # Get genre features from movie IDs
+            genre_features = self.movie_genres[movie_ids]
+
+        # Average genre embeddings for multi-hot encoding
+        if len(genre_features.shape) == 2:
+            # Multi-hot encoding case
+            genre_emb = (self.genre_embedding.weight.unsqueeze(0) * genre_features.unsqueeze(-1)).sum(dim=1)
+            genre_emb = genre_emb / (genre_features.sum(dim=1, keepdim=True) + 1e-8)
+        else:
+            # Single genre case
+            genre_emb = self.genre_embedding(genre_features).mean(dim=1)
 
         # Combine features
         combined_features = torch.cat([user_emb, movie_emb, genre_emb], dim=1)
@@ -83,9 +103,14 @@ class HybridModel(BaseModel):
         rating = self.fusion(combined_features).squeeze()
         rating = rating + user_bias + movie_bias + self.global_bias
 
+        # Ensure output is in [0, 1] range for BCE loss
+        rating = torch.sigmoid(rating)
+
         return rating
 
-    def predict(self, user_ids: torch.Tensor, movie_ids: torch.Tensor, genre_features: torch.Tensor) -> torch.Tensor:
+    def predict(
+        self, user_ids: torch.Tensor, movie_ids: torch.Tensor, genre_features: torch.Tensor = None
+    ) -> torch.Tensor:
         """Make predictions (same as forward for this model)."""
         self.eval()
         with torch.no_grad():

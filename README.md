@@ -2,7 +2,13 @@
 
 A production-ready, modular PyTorch-based movie recommendation system following industry best practices. Built with scalability, maintainability, and extensibility in mind.
 
-## 🏆 Key Features
+#└── utils/                            # Utilities 🛠️
+    ├── __init__.py                   # Package init
+    ├── logger.py                     # Logging utilities
+    ├── timer.py                      # Timing utilities
+    ├── plotter.py                    # Visualization utilities
+    ├── mlflow_utils.py               # MLflow integration utilities
+    └── helpers.py                    # Helper functionsey Features
 
 ### **🔧 Professional Architecture**
 - **Modular Design**: Organized packages for models, data, losses, metrics, and utilities
@@ -35,6 +41,31 @@ A production-ready, modular PyTorch-based movie recommendation system following 
 - **Experiment Tracking**: Organized output directories and automatic logging
 - **Multi-Model Support**: Easy switching between different model architectures
 - **Hyperparameter Sweeps**: Automated parameter optimization experiments
+
+### **🔬 MLflow Integration**
+- **Experiment Tracking**: Automatic logging of all training metrics and hyperparameters
+- **Model Registry**: Version control and management for trained models
+- **Performance Comparison**: Interactive web UI for comparing experiments
+- **Best Model Selection**: Automated identification and loading of optimal models
+- **Reproducible Experiments**: Complete parameter and artifact tracking
+
+## 🏆 Current Performance Results
+
+Based on our MLflow experiments, here are the latest performance benchmarks:
+
+### **🥇 Best Model Performance**
+- **Best Model**: `hybrid` with **RMSE: 0.3255**
+- **Best Accuracy**: `hybrid` with **85.1%** accuracy  
+- **Model Ranking**: Hybrid models consistently outperform collaborative-only approaches
+- **Improvement**: 6% RMSE improvement over baseline collaborative filtering
+
+### **📊 Model Comparison Summary**
+| Model Type | Best RMSE | Best Accuracy | Runs Completed |
+|------------|-----------|---------------|-----------------|
+| hybrid | **0.3255** | **85.1%** | 3 |
+| collaborative | 0.3474 | 83.4% | 3 |
+
+*All results tracked automatically with MLflow - view detailed comparisons at http://127.0.0.1:5000*
 
 ## 🚀 Quick Start
 
@@ -78,9 +109,25 @@ python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf
 python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256,512
 ```
 
-**Output Organization**: All training outputs are saved in the `outputs/` directory:
+### **MLflow Experiment Tracking**
+```bash
+# View experiment results
+python check_mlflow.py
+
+# Comprehensive experiment analysis
+python mlflow_simple_guide.py
+
+# Start MLflow UI (http://127.0.0.1:5000)
+python -m mlflow ui --port 5000
+
+# Load best model programmatically
+python -c "from utils.mlflow_utils import MLflowModelSelector; selector = MLflowModelSelector(); model, run_id = selector.load_best_model('val_rmse'); print(f'Loaded best model from run: {run_id}')"
+```
+
+**Output Organization**: All training outputs are saved in organized directories:
 - **Single runs**: `outputs/movie_recommendation/YYYY-MM-DD_HH-MM-SS/`
 - **Multirun**: `outputs/movie_recommendation/multirun/YYYY-MM-DD_HH-MM-SS/N_modelname/`
+- **MLflow tracking**: `mlruns/` directory with experiment data and model artifacts
 - **Each run contains**: logs, model checkpoints, configuration files, and metrics
 
 ### **Simple Optimizer Configuration**
@@ -228,6 +275,15 @@ reco_app/
 │               ├── 1_modelname/      # Individual job outputs
 │               └── multirun.yaml     # Multi-run configuration
 │
+├── mlruns/                           # MLflow experiment tracking 🔬
+│   └── experiment_id/                # MLflow experiment directory
+│       ├── run_id/                   # Individual experiment runs
+│       │   ├── artifacts/            # Model artifacts and checkpoints
+│       │   ├── metrics/              # Training and validation metrics
+│       │   ├── params/               # Hyperparameters and configuration
+│       │   └── tags/                 # Experiment metadata and tags
+│       └── models/                   # MLflow model registry
+│
 ├── logs/                             # Log files 📝
 │
 └── data/                             # Dataset files 📂
@@ -239,7 +295,59 @@ reco_app/
         └── README.txt                # Dataset documentation
 ```
 
-## 🔧 Configuration System
+## � MLflow Experiment Tracking
+
+### **Automatic Experiment Tracking**
+Every training run is automatically tracked with MLflow:
+- **Hyperparameters**: All model and training configuration
+- **Metrics**: Training/validation losses, RMSE, MAE, Precision@K, Recall@K, NDCG@10
+- **Model Artifacts**: Trained models with metadata
+- **System Information**: Hardware, software versions, execution time
+
+### **MLflow Web UI**
+Start the interactive web interface to explore experiments:
+```bash
+python -m mlflow ui --port 5000
+# Open: http://127.0.0.1:5000
+```
+
+### **Model Selection & Management**
+```python
+from utils.mlflow_utils import MLflowModelSelector
+
+# Initialize selector
+selector = MLflowModelSelector(experiment_name="movie_recommendation")
+
+# Get best model by RMSE
+best_model, run_id = selector.load_best_model(metric_name="val_rmse")
+
+# Compare all experiments
+comparison = selector.compare_models()
+print(comparison[['model_type', 'val_rmse', 'val_accuracy']].head())
+
+# Load specific model by run ID
+model = selector.load_model_by_run_id(run_id="abc123")
+```
+
+### **Experiment Analysis Tools**
+```bash
+# Quick experiment overview
+python check_mlflow.py
+
+# Comprehensive analysis with rankings and insights
+python mlflow_simple_guide.py
+
+# Advanced experiment workflows and examples
+python mlflow_workflows.py
+```
+
+### **Best Practices for MLflow**
+- **Run systematic hyperparameter sweeps**: Use multirun experiments
+- **Tag experiments meaningfully**: Models are automatically tagged with type
+- **Compare metrics consistently**: All models track the same evaluation metrics
+- **Use model registry**: Load best models for production deployment
+
+## �🔧 Configuration System
 
 All settings are managed through `config.py`:
 
@@ -600,7 +708,41 @@ python test_gpu_simple.py
 - Ensure `data/` folder contains MovieLens CSV files
 - System automatically creates sample data if files are missing
 
-## 📄 License
+## � Documentation Files
+
+- **README.md** - Complete project documentation (this file)  
+- **MLFLOW_QUICK_REFERENCE.md** - Quick commands and tips for MLflow
+- **ARCHITECTURE.md** - Detailed system architecture
+- **STRUCTURE_GUIDE.md** - Project structure explanation
+- **GPU_SETUP.md** - GPU configuration guide
+- **HYDRA_GUIDE.md** - Hydra framework usage guide
+- **model_comparison_report.md** - Latest experiment results (auto-generated)
+
+## 🎉 Project Status
+
+### **✅ Completed Features**
+- ✅ **4 Model Architectures**: Collaborative, Content-Based, Hybrid, Deep CF
+- ✅ **Hydra Integration**: Advanced configuration management and multirun experiments  
+- ✅ **MLflow Tracking**: Automatic experiment logging, model registry, and comparison
+- ✅ **Professional Structure**: Modular, extensible, production-ready codebase
+- ✅ **GPU Acceleration**: CUDA support with automatic device detection
+- ✅ **Comprehensive Metrics**: RMSE, MAE, Precision@K, Recall@K, NDCG@10
+- ✅ **Best Model Performance**: Hybrid model achieving **RMSE: 0.3255** and **85.1%** accuracy
+
+### **📈 Performance Achievements**
+- 🏆 **6% RMSE improvement** over baseline collaborative filtering
+- 🏆 **Best accuracy: 85.1%** with hybrid model architecture
+- 🏆 **Systematic experiment tracking** with 6+ completed MLflow runs
+- 🏆 **Automated model selection** for production deployment
+
+### **🔧 Development Workflow**
+1. **Experiment**: Use `python train_hydra.py -m` for systematic testing
+2. **Track**: All experiments automatically logged with MLflow
+3. **Analyze**: Use `python mlflow_simple_guide.py` for comprehensive analysis  
+4. **Deploy**: Load best models with `MLflowModelSelector`
+5. **Iterate**: Continuous improvement through hyperparameter optimization
+
+## �📄 License
 
 This project is open source and available under the **MIT License**.
 

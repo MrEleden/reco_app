@@ -1,0 +1,23 @@
+artifact_path: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/models/m-1881b8507b594f5a90325e6b8707d5e2/artifacts
+flavors:
+  python_function:
+    config:
+      device: null
+    data: data
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pytorch
+    pickle_module_name: mlflow.pytorch.pickle_module
+    python_version: 3.11.9
+  pytorch:
+    code: null
+    model_data: data
+    pytorch_version: 2.5.1+cu121
+mlflow_version: 3.4.0
+model_id: m-1881b8507b594f5a90325e6b8707d5e2
+model_size_bytes: 2115862
+model_uuid: m-1881b8507b594f5a90325e6b8707d5e2
+prompts: null
+run_id: 252a37f2ea4f463da6d4032adaad7446
+utc_time_created: '2025-09-28 19:32:49.057427'

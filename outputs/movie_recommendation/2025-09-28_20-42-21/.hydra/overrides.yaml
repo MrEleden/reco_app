@@ -1,0 +1,2 @@
+- model=hybrid
+- train.epochs=1

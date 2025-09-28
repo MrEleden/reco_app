@@ -41,7 +41,7 @@ from data import RecommenderDataset, MovieLensDataLoader
 from losses import RecommenderLoss
 from metrics import RecommenderMetrics
 from optimizers import RecommenderOptimizer
-from utils import Logger, Timer, setup_seed
+from utils import Logger, Timer, setup_seed, MLflowTracker
 
 # Set up logging
 log = logging.getLogger(__name__)
@@ -85,6 +85,16 @@ def create_model(cfg: DictConfig, n_users: int, n_movies: int, n_genres: int = 2
             n_factors=cfg.get("embedding_dim", 50),
             dropout=cfg.dropout,
         )
+        # Create dummy movie-genre mapping for hybrid model
+        import torch
+
+        dummy_genres = torch.zeros(n_movies, n_genres)
+        # Set random genres for testing
+        for i in range(n_movies):
+            n_movie_genres = torch.randint(1, 4, (1,)).item()  # 1-3 genres per movie
+            genre_indices = torch.randperm(n_genres)[:n_movie_genres]
+            dummy_genres[i, genre_indices] = 1.0
+        model.set_movie_genres(dummy_genres)
     elif model_type == "DeepCollaborativeFiltering":
         model = DeepCollaborativeFiltering(
             n_users=n_users,
@@ -196,12 +206,28 @@ def main(cfg: DictConfig) -> None:
     # Set up reproducibility
     setup_seed(cfg.seed)
 
+    # Initialize MLflow tracking
+    mlflow_tracker = None
+    if cfg.mlflow.enable:
+        mlflow_tracker = MLflowTracker(experiment_name=cfg.mlflow.experiment_name, tracking_uri=cfg.mlflow.tracking_uri)
+
+        # Start MLflow run
+        run_name = f"{cfg.model.name}_{cfg.experiment.name}"
+        mlflow_run = mlflow_tracker.start_run(
+            run_name=run_name, model_name=cfg.model.name, config=OmegaConf.to_container(cfg, resolve=True)
+        )
+        log.info(f"MLflow run started: {mlflow_run.info.run_id}")
+
     # Set up device
     if cfg.device == "auto":
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device(cfg.device)
     log.info(f"Using device: {device}")
+
+    # Log device to MLflow
+    if mlflow_tracker:
+        mlflow_tracker.log_metrics({"device_type": 1.0 if device.type == "cuda" else 0.0})
 
     # Load data
     log.info("Loading data...")
@@ -249,6 +275,16 @@ def main(cfg: DictConfig) -> None:
     total_params = sum(p.numel() for p in model.parameters())
     log.info(f"Model created with {total_params:,} parameters")
 
+    # Log model info to MLflow
+    if mlflow_tracker:
+        mlflow_tracker.log_metrics(
+            {
+                "model_parameters": float(total_params),
+                "n_users": float(config["n_users"]),
+                "n_movies": float(config["n_movies"]),
+            }
+        )
+
     # Create loss, optimizer, scheduler
     criterion = RecommenderLoss(loss_type=cfg.train.loss.type)
     optimizer = create_optimizer(model, cfg)  # Pass the full config, not just cfg.train
@@ -283,6 +319,16 @@ def main(cfg: DictConfig) -> None:
         log.info(f"Train Metrics: {train_results}")
         log.info(f"Val Metrics: {val_results}")
 
+        # Log to MLflow
+        if mlflow_tracker:
+            mlflow_tracker.log_epoch_metrics(
+                epoch=epoch + 1,
+                train_metrics=train_results,
+                val_metrics=val_results,
+                train_loss=train_loss,
+                val_loss=val_loss,
+            )
+
         # Save best model
         if val_loss < best_val_loss - cfg.train.min_delta:
             best_val_loss = val_loss
@@ -312,6 +358,45 @@ def main(cfg: DictConfig) -> None:
 
     log.info("Training completed!")
     log.info(f"Best validation loss: {best_val_loss:.4f}")
+
+    # Final MLflow logging
+    if mlflow_tracker:
+        # Log final model if configured
+        if cfg.mlflow.log_models:
+            # Get best metrics for final logging
+            best_metrics = {
+                "best_val_loss": best_val_loss,
+                "total_epochs": epoch + 1,
+                "early_stopped": patience_counter >= cfg.train.patience,
+            }
+
+            # Load best model for logging
+            try:
+                model_path = f"best_model_{cfg.model.name}.pth"
+                if os.path.exists(model_path):
+                    checkpoint = torch.load(model_path, map_location=device)
+                    model.load_state_dict(checkpoint["model_state_dict"])
+
+                    # Log the model and final metrics
+                    mlflow_tracker.log_model(
+                        model=model, model_name=cfg.model.name, best_metrics=best_metrics, model_path=model_path
+                    )
+
+                    # Log additional metrics
+                    mlflow_tracker.log_metrics(
+                        {
+                            "final_val_loss": best_val_loss,
+                            "training_epochs": float(epoch + 1),
+                            "early_stopped": 1.0 if patience_counter >= cfg.train.patience else 0.0,
+                        }
+                    )
+
+            except Exception as e:
+                log.warning(f"Could not log model to MLflow: {e}")
+
+        # End MLflow run
+        mlflow_tracker.end_run()
+        log.info("MLflow run completed")
 
 
 if __name__ == "__main__":

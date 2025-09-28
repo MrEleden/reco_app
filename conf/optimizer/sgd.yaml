@@ -1,0 +1,6 @@
+# SGD optimizer configuration
+# @package _global_.optimizer
+type: "sgd"
+momentum: 0.9
+dampening: 0.0
+nesterov: false

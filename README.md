@@ -83,6 +83,35 @@ python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256
 - **Multirun**: `outputs/movie_recommendation/multirun/YYYY-MM-DD_HH-MM-SS/N_modelname/`
 - **Each run contains**: logs, model checkpoints, configuration files, and metrics
 
+### **Simple Optimizer Configuration**
+```bash
+# Use Adam optimizer (default)
+python train_hydra.py model=collaborative
+
+# Use SGD optimizer with momentum
+python train_hydra.py optimizer=sgd model=collaborative
+
+# Compare Adam vs SGD
+python train_hydra.py -m optimizer=adam,sgd model=collaborative
+```
+
+**Available Optimizers**:
+- **adam**: Adam optimizer with adaptive learning rates (recommended for most cases)
+- **sgd**: SGD with momentum support (simple and effective)
+
+### **Direct Usage (Similar to Loss/Metrics Pattern)**
+```python
+from optimizers import RecommenderOptimizer, create_optimizer
+import torch
+
+# Method 1: Using RecommenderOptimizer class
+optimizer_factory = RecommenderOptimizer("adam")
+adam_optimizer = optimizer_factory.create_optimizer(model, lr=0.001, betas=(0.9, 0.999))
+
+# Method 2: Using factory function
+sgd_optimizer = create_optimizer(model, "sgd", lr=0.01, momentum=0.9)
+```
+
 ### **Using the Trained Model**
 ```python
 from models import CollaborativeFilteringModel, ContentBasedModel, HybridModel, DeepCollaborativeFiltering
@@ -171,6 +200,10 @@ reco_app/
 ├── metrics/                          # Evaluation metrics 📈
 │   ├── __init__.py                   # Package init
 │   └── metric.py                     # Metrics implementations
+│
+├── optimizers/                       # Simple optimizer implementations ⚡
+│   ├── __init__.py                   # Package initialization  
+│   └── optimizer.py                  # Adam and SGD optimizer classes
 │
 ├── utils/                            # Utilities 🛠️
 │   ├── __init__.py                   # Package init

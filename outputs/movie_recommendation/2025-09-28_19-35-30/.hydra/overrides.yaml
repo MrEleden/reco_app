@@ -1,0 +1,3 @@
+- optimizer=sgd
+- train.epochs=2
+- train.batch_size=256

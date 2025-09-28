@@ -5,6 +5,7 @@ defaults:
   - model: collaborative  # Default model
   - train: default       # Default training config
   - data: default        # Default data config
+  - optimizer: adam      # Default optimizer config
   - experiment: null     # Optional experiment config
   - _self_
 

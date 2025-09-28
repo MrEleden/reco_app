@@ -40,6 +40,7 @@ from models import CollaborativeFilteringModel, ContentBasedModel, HybridModel, 
 from data import RecommenderDataset, MovieLensDataLoader
 from losses import RecommenderLoss
 from metrics import RecommenderMetrics
+from optimizers import RecommenderOptimizer
 from utils import Logger, Timer, setup_seed
 
 # Set up logging
@@ -91,35 +92,20 @@ def create_model(cfg: DictConfig, n_users: int, n_movies: int, n_genres: int = 2
 
 
 def create_optimizer(model: nn.Module, cfg: DictConfig) -> torch.optim.Optimizer:
-    """Create optimizer based on configuration."""
-    optimizer_type = cfg.optimizer.type.lower()
+    """Create optimizer using the RecommenderOptimizer."""
+    optimizer_type = cfg.optimizer.type
+    lr = cfg.train.learning_rate
+    weight_decay = cfg.train.weight_decay
 
-    if optimizer_type == "adam":
-        optimizer = torch.optim.Adam(
-            model.parameters(),
-            lr=cfg.learning_rate,
-            weight_decay=cfg.weight_decay,
-            betas=cfg.optimizer.betas,
-            eps=cfg.optimizer.eps,
-            amsgrad=cfg.optimizer.amsgrad,
-        )
-    elif optimizer_type == "sgd":
-        optimizer = torch.optim.SGD(
-            model.parameters(),
-            lr=cfg.learning_rate,
-            weight_decay=cfg.weight_decay,
-            momentum=0.9,
-        )
-    elif optimizer_type == "rmsprop":
-        optimizer = torch.optim.RMSprop(
-            model.parameters(),
-            lr=cfg.learning_rate,
-            weight_decay=cfg.weight_decay,
-        )
-    else:
-        raise ValueError(f"Unknown optimizer type: {optimizer_type}")
+    # Get optimizer-specific parameters
+    optimizer_params = {}
+    for key, value in cfg.optimizer.items():
+        if key != "type":
+            optimizer_params[key] = value
 
-    return optimizer
+    # Create optimizer using the new pattern
+    optimizer_factory = RecommenderOptimizer(optimizer_type)
+    return optimizer_factory.create_optimizer(model=model, lr=lr, weight_decay=weight_decay, **optimizer_params)
 
 
 def create_scheduler(optimizer: torch.optim.Optimizer, cfg: DictConfig):
@@ -257,7 +243,7 @@ def main(cfg: DictConfig) -> None:
 
     # Create loss, optimizer, scheduler
     criterion = RecommenderLoss(loss_type=cfg.train.loss.type)
-    optimizer = create_optimizer(model, cfg.train)
+    optimizer = create_optimizer(model, cfg)  # Pass the full config, not just cfg.train
     scheduler = create_scheduler(optimizer, cfg.train)
 
     # Create metrics

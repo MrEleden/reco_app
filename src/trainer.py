@@ -34,7 +34,7 @@ class ModelTrainer:
         self.best_val_loss = float("inf")
         self.best_model_state = None
 
-        print(f"🚀 Trainer initialized for {model_type} model on {self.device}")
+        print(f"Trainer initialized for {model_type} model on {self.device}")
 
     def prepare_model(self, model_config: Dict) -> bool:
         """Initialize model based on configuration."""
@@ -72,11 +72,11 @@ class ModelTrainer:
                 raise ValueError(f"Unknown model type: {self.model_type}")
 
             self.model = self.model.to(self.device)
-            print(f"✅ {self.model_type.capitalize()} model initialized")
+            print(f"{self.model_type.capitalize()} model initialized")
             return True
 
         except Exception as e:
-            print(f"❌ Error preparing model: {e}")
+            print(f"Error preparing model: {e}")
             return False
 
     def prepare_training(self, learning_rate: float = 0.01, weight_decay: float = 1e-5):
@@ -95,7 +95,7 @@ class ModelTrainer:
             self.optimizer, mode="min", factor=0.5, patience=5, min_lr=1e-6
         )
 
-        print(f"✅ Training setup complete - LR: {learning_rate}, Weight Decay: {weight_decay}")
+        print(f"Training setup complete - LR: {learning_rate}, Weight Decay: {weight_decay}")
 
     def train_epoch(self, train_loader: DataLoader, epoch: int) -> float:
         """Train for one epoch."""
@@ -211,7 +211,7 @@ class ModelTrainer:
     ) -> str:
         """Full training loop."""
         if self.model is None or self.optimizer is None:
-            return "❌ Model or optimizer not prepared"
+            return "Model or optimizer not prepared"
 
         # Create models directory
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -223,13 +223,13 @@ class ModelTrainer:
         patience_counter = 0
 
         # Training log
-        result_text = f"🚀 **Training {self.model_type.capitalize()} Model**\n\n"
+        result_text = f"**Training {self.model_type.capitalize()} Model**\n\n"
         result_text += f"- Epochs: {epochs}\n"
         result_text += f"- Device: {self.device}\n"
         result_text += f"- Early Stopping: {early_stopping_patience} epochs\n\n"
         result_text += "**Training Progress:**\n\n"
 
-        print(f"🚀 Starting training for {epochs} epochs...")
+        print(f"Starting training for {epochs} epochs...")
 
         for epoch in range(epochs):
             start_time = time.time()
@@ -264,7 +264,7 @@ class ModelTrainer:
                     save_path,
                 )
 
-                best_marker = " ⭐ (Best!)"
+                best_marker = " (Best!)"
             else:
                 patience_counter += 1
                 best_marker = ""
@@ -289,7 +289,7 @@ class ModelTrainer:
                 break
 
         # Training summary
-        result_text += f"\n✅ **Training Complete!**\n"
+        result_text += f"\n**Training Complete!**\n"
         result_text += f"- Best Validation Loss: {self.best_val_loss:.4f}\n"
         result_text += f"- Model saved to: `{save_path}`\n"
         result_text += f"- Total epochs: {len(self.train_losses)}\n"
@@ -299,7 +299,7 @@ class ModelTrainer:
     def plot_training_history(self, save_path: str = None) -> str:
         """Plot training and validation loss curves."""
         if not self.train_losses or not self.val_losses:
-            return "❌ No training history available"
+            return "No training history available"
 
         plt.figure(figsize=(10, 6))
         plt.plot(self.train_losses, label="Training Loss", marker="o")
@@ -313,20 +313,20 @@ class ModelTrainer:
         if save_path:
             plt.savefig(save_path, dpi=150, bbox_inches="tight")
             plt.close()
-            return f"✅ Training plot saved to {save_path}"
+            return f"Training plot saved to {save_path}"
         else:
             plt.show()
-            return "✅ Training plot displayed"
+            return "Training plot displayed"
 
     def load_model(self, model_path: str, model_config: Dict) -> str:
         """Load a trained model."""
         try:
             if not os.path.exists(model_path):
-                return f"❌ Model file not found: {model_path}"
+                return f"Model file not found: {model_path}"
 
             # Prepare model architecture
             if not self.prepare_model(model_config):
-                return "❌ Failed to prepare model architecture"
+                return "Failed to prepare model architecture"
 
             # Load checkpoint
             checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
@@ -342,14 +342,14 @@ class ModelTrainer:
                 self.val_losses = checkpoint["val_losses"]
 
             return (
-                f"✅ **Model Loaded Successfully!**\n"
+                f"**Model Loaded Successfully!**\n"
                 f"- Model Type: {checkpoint.get('model_type', 'unknown')}\n"
                 f"- Epoch: {checkpoint.get('epoch', 'unknown')}\n"
                 f"- Validation Loss: {checkpoint.get('val_loss', 'unknown'):.4f}"
             )
 
         except Exception as e:
-            return f"❌ Error loading model: {str(e)}"
+            return f"Error loading model: {str(e)}"
 
     def get_model_predictions(self, data_loader: DataLoader) -> np.ndarray:
         """Get model predictions for a dataset."""
@@ -395,7 +395,7 @@ def train_collaborative_model(epochs: int = 20, batch_size: int = 256, learning_
         user_movie_pairs, model_config = data_loader.get_collaborative_data()
 
         if user_movie_pairs is None:
-            return "❌ No data available for training"
+            return "No data available for training"
 
         # Create datasets
         train_pairs, val_pairs = data_loader.create_train_val_split(user_movie_pairs)
@@ -415,7 +415,7 @@ def train_collaborative_model(epochs: int = 20, batch_size: int = 256, learning_
 
         # Prepare model and training
         if not trainer.prepare_model(model_config):
-            return "❌ Failed to prepare model"
+            return "Failed to prepare model"
 
         trainer.prepare_training(learning_rate=learning_rate)
 
@@ -429,4 +429,4 @@ def train_collaborative_model(epochs: int = 20, batch_size: int = 256, learning_
         return result
 
     except Exception as e:
-        return f"❌ **Training Error:** {str(e)}"
+        return f"**Training Error:** {str(e)}"

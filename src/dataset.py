@@ -139,7 +139,7 @@ class MovieLensDataLoader:
             if os.path.exists(movies_path) and os.path.exists(ratings_path):
                 self.movies_df = pd.read_csv(movies_path)
                 self.ratings_df = pd.read_csv(ratings_path)
-                print(f"✅ Loaded {len(self.movies_df)} movies and {len(self.ratings_df)} ratings")
+                print(f"Loaded {len(self.movies_df)} movies and {len(self.ratings_df)} ratings")
 
                 # Load optional files
                 links_path = os.path.join(self.data_dir, "links.csv")
@@ -147,13 +147,13 @@ class MovieLensDataLoader:
 
                 if os.path.exists(links_path):
                     self.links_df = pd.read_csv(links_path)
-                    print(f"✅ Loaded {len(self.links_df)} movie links")
+                    print(f"Loaded {len(self.links_df)} movie links")
 
                 if os.path.exists(tags_path):
                     self.tags_df = pd.read_csv(tags_path)
-                    print(f"✅ Loaded {len(self.tags_df)} tags")
+                    print(f"Loaded {len(self.tags_df)} tags")
             else:
-                print("❌ MovieLens data files not found")
+                print("MovieLens data files not found")
                 self._create_sample_data()
 
         except Exception as e:
@@ -188,7 +188,7 @@ class MovieLensDataLoader:
                     sample_ratings.append((user_id, movie_id, rating, 964982703))
 
         self.ratings_df = pd.DataFrame(sample_ratings, columns=["userId", "movieId", "rating", "timestamp"])
-        print("✅ Created sample data for demonstration")
+        print("Created sample data for demonstration")
 
     def _prepare_encoders(self):
         """Prepare label encoders for users, movies, and genres."""
@@ -208,7 +208,7 @@ class MovieLensDataLoader:
         self.genre_encoder.fit(list(all_genres))
 
         print(
-            f"✅ Prepared encoders: {len(self.user_encoder.classes_)} users, "
+            f"Prepared encoders: {len(self.user_encoder.classes_)} users, "
             f"{len(self.movie_encoder.classes_)} movies, {len(self.genre_encoder.classes_)} genres"
         )
 

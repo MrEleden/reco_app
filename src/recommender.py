@@ -39,7 +39,7 @@ class MovieRecommendationSystem:
         self.trained_models = {}
 
         self._prepare_recommendations()
-        print("✅ Movie Recommendation System initialized for local PyTorch training")
+        print("Movie Recommendation System initialized for local PyTorch training")
 
     def _prepare_recommendations(self):
         """Prepare recommendation data structures."""
@@ -57,7 +57,7 @@ class MovieRecommendationSystem:
             index="userId", columns="movieId", values="rating", fill_value=0
         )
 
-        print(f"📊 Prepared stats for {len(self.movie_stats)} movies")
+        print(f"Prepared stats for {len(self.movie_stats)} movies")
 
     def get_movie_info(self, movie_id: int) -> Dict:
         """Get detailed movie information."""
@@ -127,18 +127,18 @@ class MovieRecommendationSystem:
         """
         try:
             if self.ratings_df is None:
-                return "❌ No rating data available"
+                return "No rating data available"
 
             # Check if user exists
             available_users = self.ratings_df["userId"].unique()
             if user_id not in available_users:
                 sample_users = sorted(available_users)[:10]
-                return f"❌ User {user_id} not found. Try user IDs: {sample_users}"
+                return f"User {user_id} not found. Try user IDs: {sample_users}"
 
             # Get user's ratings
             user_ratings = self.ratings_df[self.ratings_df["userId"] == user_id]
             if len(user_ratings) == 0:
-                return f"❌ User {user_id} hasn't rated any movies"
+                return f"User {user_id} hasn't rated any movies"
 
             rated_movies = set(user_ratings["movieId"].values)
 
@@ -148,7 +148,7 @@ class MovieRecommendationSystem:
                 return self._get_collaborative_recommendations(user_id, n_recommendations, rated_movies)
 
         except Exception as e:
-            return f"❌ Error generating recommendations: {str(e)}"
+            return f"Error generating recommendations: {str(e)}"
 
     def _get_collaborative_recommendations(self, user_id: int, n_recommendations: int, rated_movies: set) -> str:
         """Get collaborative filtering recommendations without ML."""
@@ -191,12 +191,12 @@ class MovieRecommendationSystem:
 
         # Format output
         if not top_recs:
-            return f"❌ No recommendations found for user {user_id}"
+            return f"No recommendations found for user {user_id}"
 
-        result = f"🎬 **Recommendations for User {user_id}** (Collaborative Filtering)\n\n"
+        result = f"**Recommendations for User {user_id}** (Collaborative Filtering)\n\n"
         for i, rec in enumerate(top_recs, 1):
             result += f"{i}. **{rec['title']}**\n"
-            result += f"   📊 Rating: {rec.get('avg_rating', 'N/A')}/5 "
+            result += f"   Rating: {rec.get('avg_rating', 'N/A')}/5 "
             result += f"({rec.get('rating_count', 0)} reviews)\n"
             result += f"   🎭 Genres: {rec['genres']}\n"
             result += f"   💡 {rec['reason']}\n\n"
@@ -208,7 +208,7 @@ class MovieRecommendationSystem:
         try:
             model_info = self.trained_models.get("collaborative")
             if not model_info:
-                return "❌ No trained model available. Train a model first."
+                return "No trained model available. Train a model first."
 
             model = model_info["model"]
             config = model_info["config"]
@@ -219,7 +219,7 @@ class MovieRecommendationSystem:
 
             # Encode user ID
             if user_id not in user_encoder.classes_:
-                return f"❌ User {user_id} not in training data"
+                return f"User {user_id} not in training data"
 
             user_encoded = user_encoder.transform([user_id])[0]
 
@@ -253,13 +253,13 @@ class MovieRecommendationSystem:
                 if "error" not in movie_info:
                     result += f"{i}. **{movie_info['title']}**\n"
                     result += f"   🧠 AI Predicted Rating: {pred_rating:.2f}/5\n"
-                    result += f"   📊 Avg Rating: {movie_info.get('avg_rating', 'N/A')}/5\n"
+                    result += f"   Avg Rating: {movie_info.get('avg_rating', 'N/A')}/5\n"
                     result += f"   🎭 Genres: {movie_info['genres']}\n\n"
 
             return result
 
         except Exception as e:
-            return f"❌ ML recommendation error: {str(e)}"
+            return f"ML recommendation error: {str(e)}"
 
     def _find_similar_users(self, user_id: int, n_similar: int = 10) -> List[Tuple[int, float]]:
         """Find users similar to the given user based on rating patterns."""
@@ -321,12 +321,12 @@ class MovieRecommendationSystem:
             Training result message
         """
         try:
-            print(f"🚀 Starting PyTorch training...")
+            print(f"Starting PyTorch training...")
 
             # Get training data
             user_movie_pairs, config = self.data_loader.get_collaborative_data()
             if user_movie_pairs is None:
-                return "❌ No training data available"
+                return "No training data available"
 
             # Update config with parameters
             config.update({"n_factors": embedding_dim, "dropout": dropout_rate})
@@ -383,28 +383,28 @@ class MovieRecommendationSystem:
                     * 100
                 )
 
-                result_msg = f"✅ **Training Completed Successfully!**\n\n"
-                result_msg += f"📊 **Results:**\n"
+                result_msg = f"**Training Completed Successfully!**\n\n"
+                result_msg += f"**Results:**\n"
                 result_msg += f"• Best Validation Loss: {results['best_val_loss']:.4f}\n"
                 result_msg += f"• Final Train Loss: {results['final_train_loss']:.4f}\n"
                 result_msg += f"• Total Epochs: {results['total_epochs']}\n"
                 result_msg += f"• Improvement: {improvement:.1f}%\n\n"
                 result_msg += f" **Model saved and ready for recommendations!**\n"
-                result_msg += f"🎯 **Next:** Try AI recommendations with method='ml'"
+                result_msg += f"**Next:** Try AI recommendations with method='ml'"
 
                 return result_msg
             else:
-                return f"❌ Training failed: {results.get('error', 'Unknown error')}"
+                return f"Training failed: {results.get('error', 'Unknown error')}"
 
         except Exception as e:
-            return f"❌ Training error: {str(e)}"
+            return f"Training error: {str(e)}"
 
     def load_trained_model(self, model_type: str = "collaborative") -> str:
         """Load a previously trained model."""
         try:
             model_path = f"models/best_{model_type}_model.pt"
             if not os.path.exists(model_path):
-                return f"❌ No trained {model_type} model found. Train one first."
+                return f"No trained {model_type} model found. Train one first."
 
             # Load model state with weights_only=False to allow sklearn objects
             model_state = torch.load(model_path, map_location="cpu", weights_only=False)
@@ -432,10 +432,10 @@ class MovieRecommendationSystem:
                 },
             }
 
-            return f"✅ {model_type.capitalize()} model loaded successfully! Ready for AI recommendations."
+            return f"{model_type.capitalize()} model loaded successfully! Ready for AI recommendations."
 
         except Exception as e:
-            return f"❌ Error loading model: {str(e)}"
+            return f"Error loading model: {str(e)}"
 
     def get_training_stats(self) -> Dict:
         """Get statistics about available data and training."""

@@ -13,11 +13,8 @@ from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 
-# Import your existing dataset loader temporarily
-sys.path.append("src")
-from dataset import MovieLensDataLoader, RecommenderDataset
-
-# Import the new model structure
+# Import the new data and model structures
+from data import MovieLensDataLoader, RecommenderDataset
 from models import CollaborativeFilteringModel
 from config import *
 

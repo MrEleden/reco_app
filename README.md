@@ -128,10 +128,12 @@ reco_app/
 ├── logs/                             # Log files 📝
 │
 └── data/                             # Dataset files 📂
-    ├── movies.csv                    # Movies data
-    ├── ratings.csv                   # Ratings data
-    ├── links.csv                     # Links data
-    └── tags.csv                      # Tags data
+    └── raw/                          # Raw CSV data files
+        ├── movies.csv                # Movies data
+        ├── ratings.csv               # Ratings data
+        ├── links.csv                 # Links data
+        ├── tags.csv                  # Tags data
+        └── README.txt                # Dataset documentation
 ```
 
 ## 🔧 Configuration System

@@ -6,10 +6,10 @@ import os
 
 # Data configuration
 DATA_DIR = "data"
-MOVIES_FILE = os.path.join(DATA_DIR, "movies.csv")
-RATINGS_FILE = os.path.join(DATA_DIR, "ratings.csv")
-LINKS_FILE = os.path.join(DATA_DIR, "links.csv")
-TAGS_FILE = os.path.join(DATA_DIR, "tags.csv")
+MOVIES_FILE = os.path.join(DATA_DIR, "raw", "movies.csv")
+RATINGS_FILE = os.path.join(DATA_DIR, "raw", "ratings.csv")
+LINKS_FILE = os.path.join(DATA_DIR, "raw", "links.csv")
+TAGS_FILE = os.path.join(DATA_DIR, "raw", "tags.csv")
 
 # Model configuration
 MODEL_CONFIG = {

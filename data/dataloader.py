@@ -35,8 +35,8 @@ class MovieLensDataLoader:
     def _load_data(self):
         """Load MovieLens data files."""
         try:
-            movies_path = os.path.join(self.data_dir, "movies.csv")
-            ratings_path = os.path.join(self.data_dir, "ratings.csv")
+            movies_path = os.path.join(self.data_dir, "raw", "movies.csv")
+            ratings_path = os.path.join(self.data_dir, "raw", "ratings.csv")
 
             if os.path.exists(movies_path) and os.path.exists(ratings_path):
                 self.movies_df = pd.read_csv(movies_path)
@@ -44,8 +44,8 @@ class MovieLensDataLoader:
                 print(f"Loaded {len(self.movies_df)} movies and {len(self.ratings_df)} ratings")
 
                 # Load optional files
-                links_path = os.path.join(self.data_dir, "links.csv")
-                tags_path = os.path.join(self.data_dir, "tags.csv")
+                links_path = os.path.join(self.data_dir, "raw", "links.csv")
+                tags_path = os.path.join(self.data_dir, "raw", "tags.csv")
 
                 if os.path.exists(links_path):
                     self.links_df = pd.read_csv(links_path)

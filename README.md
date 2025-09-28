@@ -23,10 +23,18 @@ A production-ready, modular PyTorch-based movie recommendation system following 
 - **Model Checkpointing**: Automatic best model saving with early stopping
 
 ### **🛠️ Production Ready**
-- **Professional Logging**: Comprehensive training and evaluation tracking
+- **Custom Made Logging**: Comprehensive training and evaluation tracking
 - **Visualization Tools**: Training plots, data analysis, embedding visualization
 - **Reproducible Training**: Seed management and configuration tracking
 - **Error Handling**: Robust error handling throughout the pipeline
+- **Hydra Integration**: Advanced experiment management and configuration system
+
+### **⚙️ Hydra Experiment Management**
+- **Multiple Training Scripts**: Traditional and Hydra-based training options
+- **Configuration Management**: YAML-based configuration system with overrides
+- **Experiment Tracking**: Organized output directories and automatic logging
+- **Multi-Model Support**: Easy switching between different model architectures
+- **Hyperparameter Sweeps**: Automated parameter optimization experiments
 
 ## 🚀 Quick Start
 
@@ -47,6 +55,21 @@ python train.py --epochs 50 --batch-size 512 --lr 0.001 --embedding-dim 100
 
 # Simple training (for testing)
 python train_simple.py --epochs 10
+```
+
+### **Hydra-Based Advanced Training**
+```bash
+# Train with Hydra configuration system
+python train_hydra.py
+
+# Train specific model with custom parameters
+python train_hydra.py model=deep_cf train.epochs=50 train.learning_rate=0.001
+
+# Run multiple model comparison
+python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf
+
+# Hyperparameter sweep
+python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256,512
 ```
 
 ### **Using the Trained Model**
@@ -75,12 +98,13 @@ movie_ids = torch.tensor([10])
 predictions = model.predict(user_ids, movie_ids)
 ```
 
-## 📁 Professional Project Structure
+## 📁 Custom Made Project Structure
 
 ```
 reco_app/
 ├── README.md                          # This file
 ├── train.py                          # Main training script 🚀
+├── train_hydra.py                    # Hydra-based training script ⚙️
 ├── train_simple.py                   # Simplified training demo 🔧
 ├── requirements.txt                  # Dependencies 📋
 │
@@ -89,6 +113,23 @@ reco_app/
 │   ├── data_config.py                # Data processing settings
 │   ├── model_config.py               # Model architecture configs
 │   └── train_config.py               # Training hyperparameters
+│
+├── conf/                             # Hydra configuration files 🎯
+│   ├── config.yaml                   # Main Hydra config
+│   ├── model/                        # Model configurations
+│   │   ├── collaborative.yaml        # Matrix factorization settings
+│   │   ├── content_based.yaml        # Content-based settings
+│   │   ├── hybrid.yaml               # Hybrid model settings
+│   │   └── deep_cf.yaml              # Deep CF settings
+│   ├── train/                        # Training configurations
+│   │   ├── default.yaml              # Standard training
+│   │   ├── fast.yaml                 # Quick experiments
+│   │   └── production.yaml           # Thorough training
+│   ├── data/                         # Data configurations
+│   │   └── default.yaml              # Data processing settings
+│   └── experiment/                   # Experiment presets
+│       ├── quick.yaml                # Fast testing
+│       └── model_comparison.yaml     # Model benchmarking
 │
 ├── models/                           # Model architectures 🧠
 │   ├── __init__.py                   # Package initialization
@@ -290,7 +331,7 @@ plotter.plot_losses(train_losses, val_losses, save_path='results/plots/losses.pn
 
 ## 🚀 Training Options
 
-### **Command Line Arguments**
+### **Traditional Command Line Arguments**
 ```bash
 python train.py \
     --epochs 50 \
@@ -301,7 +342,22 @@ python train.py \
     --save-path results/my_model.pth
 ```
 
-### **Available Parameters**
+### **Hydra-Based Configuration System**
+```bash
+# Single model training
+python train_hydra.py model=deep_cf train.epochs=50 train.batch_size=512
+
+# Multiple model comparison
+python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf
+
+# Hyperparameter optimization
+python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 model.embedding_dim=32,64,128
+
+# Use preset configurations
+python train_hydra.py train=production model=hybrid
+```
+
+### **Available Parameters (Traditional)**
 - `--epochs`: Number of training epochs (default: 20)
 - `--batch-size`: Batch size for training (default: 256)
 - `--lr`: Learning rate (default: 0.01)

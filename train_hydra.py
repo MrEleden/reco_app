@@ -59,22 +59,30 @@ def create_model(cfg: DictConfig, n_users: int, n_movies: int, n_genres: int = 2
             dropout=cfg.dropout,
         )
     elif model_type == "ContentBasedModel":
+        # For now, create a simple version that works with user/movie IDs
+        # TODO: Set up proper movie-genre mapping
         model = ContentBasedModel(
-            n_users=n_users,
             n_genres=n_genres,
-            genre_embedding_dim=cfg.genre_embedding_dim,
-            user_embedding_dim=cfg.user_embedding_dim,
-            hidden_dims=cfg.hidden_dims,
+            n_factors=cfg.get("n_factors", cfg.get("genre_embedding_dim", 50)),
             dropout=cfg.dropout,
+            n_movies=n_movies,
         )
+        # Create dummy movie-genre mapping for now
+        import torch
+
+        dummy_genres = torch.zeros(n_movies, n_genres)
+        # Set random genres for testing
+        for i in range(n_movies):
+            n_movie_genres = torch.randint(1, 4, (1,)).item()  # 1-3 genres per movie
+            genre_indices = torch.randperm(n_genres)[:n_movie_genres]
+            dummy_genres[i, genre_indices] = 1.0
+        model.set_movie_genres(dummy_genres)
     elif model_type == "HybridModel":
         model = HybridModel(
             n_users=n_users,
             n_movies=n_movies,
             n_genres=n_genres,
-            embedding_dim=cfg.embedding_dim,
-            genre_embedding_dim=cfg.genre_embedding_dim,
-            hidden_dims=cfg.fusion_dims,
+            n_factors=cfg.get("embedding_dim", 50),
             dropout=cfg.dropout,
         )
     elif model_type == "DeepCollaborativeFiltering":

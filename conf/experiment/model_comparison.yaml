@@ -3,7 +3,7 @@
 
 # @package _global_
 defaults:
-  - override /train: default
+  - override /train: production
 
 experiment:
   name: "model_comparison"

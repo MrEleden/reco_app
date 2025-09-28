@@ -45,6 +45,12 @@ cd reco_app
 pip install -r requirements.txt
 ```
 
+**For GPU Training (Recommended)**:
+```bash
+# Install CUDA-enabled PyTorch for faster training
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
 ### **Basic Training**
 ```bash
 # Train with default parameters
@@ -71,6 +77,11 @@ python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf
 # Hyperparameter sweep
 python train_hydra.py -m train.learning_rate=0.001,0.01,0.1 train.batch_size=256,512
 ```
+
+**Output Organization**: All training outputs are saved in the `outputs/` directory:
+- **Single runs**: `outputs/movie_recommendation/YYYY-MM-DD_HH-MM-SS/`
+- **Multirun**: `outputs/movie_recommendation/multirun/YYYY-MM-DD_HH-MM-SS/N_modelname/`
+- **Each run contains**: logs, model checkpoints, configuration files, and metrics
 
 ### **Using the Trained Model**
 ```python
@@ -168,8 +179,17 @@ reco_app/
 │   ├── plotter.py                    # Visualization utilities
 │   └── helpers.py                    # Helper functions
 │
-├── results/                          # Training outputs 💾
+├── results/                          # Traditional training outputs 💾
 │   └── plots/                        # Training plots
+│
+├── outputs/                          # Hydra training outputs 📊
+│   └── movie_recommendation/         # Experiment outputs
+│       ├── YYYY-MM-DD_HH-MM-SS/      # Single run outputs
+│       └── multirun/                 # Multi-run experiment outputs
+│           └── YYYY-MM-DD_HH-MM-SS/  # Multi-run session
+│               ├── 0_modelname/      # Individual job outputs  
+│               ├── 1_modelname/      # Individual job outputs
+│               └── multirun.yaml     # Multi-run configuration
 │
 ├── logs/                             # Log files 📝
 │
@@ -463,11 +483,23 @@ We welcome contributions! Here's how to get started:
 python -c "from models import CollaborativeFilteringModel; from data import MovieLensDataLoader; print('Success!')"
 ```
 
-**CUDA Issues**:
-```python
-# Check CUDA availability
-python -c "import torch; print(f'CUDA Available: {torch.cuda.is_available()}')"
+**CUDA/GPU Setup**:
+```bash
+# Check GPU availability
+nvidia-smi
+
+# Check PyTorch CUDA availability
+python -c "import torch; print(f'CUDA Available: {torch.cuda.is_available()}'); print(f'GPU Count: {torch.cuda.device_count()}'); [print(f'GPU {i}: {torch.cuda.get_device_name(i)}') for i in range(torch.cuda.device_count())] if torch.cuda.is_available() else None"
+
+# Install CUDA-enabled PyTorch (if needed)
+pip uninstall torch torchvision torchaudio
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Test GPU training
+python test_gpu_simple.py
 ```
+
+**GPU Training**: The system automatically detects and uses GPU when available. Set `device: "cuda"` in config files to force GPU usage, or `device: "cpu"` to force CPU usage.
 
 **Data Loading Issues**:
 - Ensure `data/` folder contains MovieLens CSV files

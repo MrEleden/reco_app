@@ -1,0 +1,3 @@
+- model=collaborative
+- train.epochs=2
+- train.batch_size=512

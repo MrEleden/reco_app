@@ -115,7 +115,7 @@ def main():
     logger.info(f"Users: {config['n_users']}, Movies: {config['n_movies']}")
 
     # Create train/val split
-    train_pairs, val_pairs = data_loader.create_train_val_split(user_movie_pairs, TRAIN_CONFIG["val_ratio"])
+    train_pairs, val_pairs = data_loader.create_train_val_split(user_movie_pairs, VALIDATION_CONFIG["val_ratio"])
 
     # Create datasets
     train_dataset = RecommenderDataset(

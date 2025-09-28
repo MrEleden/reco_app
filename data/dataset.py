@@ -12,11 +12,21 @@ import os
 
 # Add config to path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from config import RANDOM_SEED
+from config import RANDOM_SEED, RATING_THRESHOLD
 
 
 class RecommenderDataset(Dataset):
-    """PyTorch Dataset for recommendation systems."""
+    """PyTorch Dataset for recommendation systems.
+
+    Args:
+        user_movie_pairs (np.ndarray): Array of [user_id, movie_id, rating] triplets
+        negative_sampling (bool): Whether to perform negative sampling for implicit feedback
+        neg_ratio (int): Ratio of negative samples to positive samples
+        n_users (int): Total number of users (for negative sampling)
+        n_movies (int): Total number of movies (for negative sampling)
+        rating_threshold (float): Threshold for converting ratings to binary labels.
+                                  Ratings > threshold become 1 (positive), else 0 (negative)
+    """
 
     def __init__(
         self,
@@ -25,12 +35,14 @@ class RecommenderDataset(Dataset):
         neg_ratio: int = 4,
         n_users: int = None,
         n_movies: int = None,
+        rating_threshold: float = RATING_THRESHOLD,
     ):
         self.user_movie_pairs = user_movie_pairs
         self.negative_sampling = negative_sampling
         self.neg_ratio = neg_ratio
         self.n_users = n_users
         self.n_movies = n_movies
+        self.rating_threshold = rating_threshold
 
         if negative_sampling:
             self.data = self._create_negative_samples()
@@ -50,8 +62,8 @@ class RecommenderDataset(Dataset):
         np.random.seed(RANDOM_SEED)
 
         for user_id, movie_id, rating in self.user_movie_pairs:
-            # Add positive sample (convert rating > 3 to 1, else 0)
-            label = 1 if rating > 3.0 else 0
+            # Add positive sample (convert rating > threshold to 1, else 0)
+            label = 1 if rating > self.rating_threshold else 0
             negative_samples.append([user_id, movie_id, label])
 
             # Add negative samples

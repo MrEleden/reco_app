@@ -1,0 +1,21 @@
+# Model comparison experiment configuration
+# Usage: python train_hydra.py -m experiment=model_comparison
+
+# @package _global_
+defaults:
+  - override /train: default
+
+experiment:
+  name: "model_comparison"
+  tags: ["comparison", "benchmark"]
+  notes: "Compare different model architectures"
+
+# Training settings optimized for comparison
+epochs: 30
+batch_size: 256
+learning_rate: 0.005
+patience: 8
+
+# Use consistent data settings
+rating_threshold: 3.0
+negative_sampling_ratio: 4

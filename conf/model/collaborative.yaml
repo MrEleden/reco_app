@@ -1,0 +1,14 @@
+# Collaborative Filtering Model Configuration
+# @package _global_
+name: collaborative
+type: CollaborativeFilteringModel
+
+# Model architecture
+embedding_dim: 50
+dropout: 0.2
+bias: true
+init_mean: 0.0
+init_std: 0.1
+
+# Model-specific settings
+description: "Matrix factorization with user and movie embeddings"

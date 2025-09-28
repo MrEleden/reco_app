@@ -1,0 +1,14 @@
+# Deep Collaborative Filtering Model Configuration
+# @package _global_
+name: deep_cf
+type: DeepCollaborativeFiltering
+
+# Model architecture
+embedding_dim: 64
+hidden_dims: [256, 128, 64]
+dropout: 0.4
+batch_norm: true
+activation: "relu"
+
+# Model-specific settings
+description: "Deep neural network for collaborative filtering"

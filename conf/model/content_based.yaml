@@ -1,0 +1,14 @@
+# Content-Based Model Configuration
+# @package _global_
+name: content_based
+type: ContentBasedModel
+
+# Model architecture
+genre_embedding_dim: 32
+user_embedding_dim: 64
+hidden_dims: [128, 64]
+dropout: 0.3
+activation: "relu"
+
+# Model-specific settings
+description: "Genre-based recommendations with user preferences"

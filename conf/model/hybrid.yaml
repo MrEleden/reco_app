@@ -1,0 +1,15 @@
+# Hybrid Model Configuration
+# @package _global_
+name: hybrid
+type: HybridModel
+
+# Model architecture
+embedding_dim: 50
+genre_embedding_dim: 32
+collaborative_weight: 0.7
+content_weight: 0.3
+fusion_dims: [256, 128]
+dropout: 0.2
+
+# Model-specific settings
+description: "Combined collaborative and content-based approach"

@@ -1,0 +1,23 @@
+# Default Data Configuration
+# @package _global_
+name: default
+
+# Data paths
+data_dir: "data"
+raw_data_dir: "data/raw"
+
+# Data processing settings
+min_ratings_per_user: 5
+min_ratings_per_movie: 5
+rating_threshold: 3.0
+
+# Negative sampling settings
+negative_sampling: true
+negative_sampling_ratio: 4
+
+# Data splits
+validation_ratio: 0.2
+test_ratio: 0.1
+
+# Random seed for reproducibility
+seed: 42

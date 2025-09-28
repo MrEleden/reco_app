@@ -1,0 +1,17 @@
+# Quick experiment configuration
+# Usage: python train_hydra.py experiment=quick
+
+# @package _global_
+defaults:
+  - override /model: collaborative
+  - override /train: fast
+
+experiment:
+  name: "quick_test"
+  tags: ["quick", "test"]
+  notes: "Quick experiment for testing"
+
+# Override some settings for fast testing
+epochs: 5
+batch_size: 512
+learning_rate: 0.001

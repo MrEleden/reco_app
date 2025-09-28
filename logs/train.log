@@ -144,3 +144,39 @@
 2025-09-28 18:11:55,986 - MovieRecommender - INFO - Epoch 27/50: Train Loss: 0.3835, Val Loss: 0.3891, Time: 6.38s, rmse: 0.3449, mae: 0.2559, accuracy: 0.8352, precision: 0.7682, recall: 0.1026, f1: 0.1810
 2025-09-28 18:12:02,304 - MovieRecommender - INFO - Epoch 28/50: Train Loss: 0.3834, Val Loss: 0.3891, Time: 6.32s, rmse: 0.3447, mae: 0.2569, accuracy: 0.8356, precision: 0.7714, recall: 0.1045, f1: 0.1840
 2025-09-28 18:12:09,106 - MovieRecommender - INFO - Epoch 29/50: Train Loss: 0.3831, Val Loss: 0.3892, Time: 6.80s, rmse: 0.3450, mae: 0.2557, accuracy: 0.8346, precision: 0.7667, recall: 0.0975, f1: 0.1730
+2025-09-28 18:16:45,824 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - TRAINING START
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - Epochs: 50
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - Batch Size: 512
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - Learning Rate: 0.001
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - Start Time: 2025-09-28 18:16:45
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:45,825 - MovieRecommender - INFO - Using device: cpu
+2025-09-28 18:16:45,865 - MovieRecommender - INFO - Loaded 100836 user-movie interactions
+2025-09-28 18:16:45,865 - MovieRecommender - INFO - Users: 610, Movies: 9742
+2025-09-28 18:16:46,531 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:46,531 - MovieRecommender - INFO - MODEL INFORMATION
+2025-09-28 18:16:46,532 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:46,532 - MovieRecommender - INFO - Model: CollaborativeFilteringModel
+2025-09-28 18:16:46,532 - MovieRecommender - INFO - Parameters: 1,045,553
+2025-09-28 18:16:46,532 - MovieRecommender - INFO - Configuration:
+2025-09-28 18:16:46,532 - MovieRecommender - INFO -   n_users: 610
+2025-09-28 18:16:46,532 - MovieRecommender - INFO -   n_movies: 9742
+2025-09-28 18:16:46,532 - MovieRecommender - INFO -   embedding_dim: 100
+2025-09-28 18:16:46,532 - MovieRecommender - INFO -   dropout: 0.2
+2025-09-28 18:16:46,532 - MovieRecommender - INFO - ==================================================
+2025-09-28 18:16:51,978 - MovieRecommender - INFO - Epoch 1/50: Train Loss: 0.5639, Val Loss: 0.4684, Time: 4.60s, rmse: 0.3803, mae: 0.3512, accuracy: 0.8367, precision: 0.7372, recall: 0.1242, f1: 0.2125
+2025-09-28 18:16:51,983 - MovieRecommender - INFO - New best model saved with val loss: 0.4684
+2025-09-28 18:16:56,767 - MovieRecommender - INFO - Epoch 2/50: Train Loss: 0.4414, Val Loss: 0.4261, Time: 4.78s, rmse: 0.3594, mae: 0.3077, accuracy: 0.8318, precision: 0.7521, recall: 0.0782, f1: 0.1417
+2025-09-28 18:16:56,770 - MovieRecommender - INFO - New best model saved with val loss: 0.4261
+2025-09-28 18:17:01,550 - MovieRecommender - INFO - Epoch 3/50: Train Loss: 0.4151, Val Loss: 0.4115, Time: 4.78s, rmse: 0.3538, mae: 0.2858, accuracy: 0.8299, precision: 0.7733, recall: 0.0586, f1: 0.1089
+2025-09-28 18:17:01,554 - MovieRecommender - INFO - New best model saved with val loss: 0.4115
+2025-09-28 18:17:07,329 - MovieRecommender - INFO - Epoch 4/50: Train Loss: 0.4040, Val Loss: 0.4033, Time: 5.78s, rmse: 0.3507, mae: 0.2733, accuracy: 0.8305, precision: 0.7647, recall: 0.0653, f1: 0.1204
+2025-09-28 18:17:07,333 - MovieRecommender - INFO - New best model saved with val loss: 0.4033
+2025-09-28 18:17:12,602 - MovieRecommender - INFO - Epoch 5/50: Train Loss: 0.3983, Val Loss: 0.3992, Time: 5.27s, rmse: 0.3493, mae: 0.2672, accuracy: 0.8307, precision: 0.7589, recall: 0.0676, f1: 0.1241
+2025-09-28 18:17:12,605 - MovieRecommender - INFO - New best model saved with val loss: 0.3992
+2025-09-28 18:17:17,388 - MovieRecommender - INFO - Epoch 6/50: Train Loss: 0.3943, Val Loss: 0.3967, Time: 4.78s, rmse: 0.3484, mae: 0.2633, accuracy: 0.8309, precision: 0.7640, recall: 0.0687, f1: 0.1261
+2025-09-28 18:17:17,392 - MovieRecommender - INFO - New best model saved with val loss: 0.3967
+2025-09-28 18:17:22,037 - MovieRecommender - INFO - Epoch 7/50: Train Loss: 0.3922, Val Loss: 0.3950, Time: 4.64s, rmse: 0.3477, mae: 0.2611, accuracy: 0.8317, precision: 0.7716, recall: 0.0731, f1: 0.1336
+2025-09-28 18:17:22,040 - MovieRecommender - INFO - New best model saved with val loss: 0.3950

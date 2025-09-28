@@ -23,7 +23,7 @@ VALIDATION_RATIO = 0.2
 TEST_RATIO = 0.1
 
 # Rating conversion settings
-RATING_THRESHOLD = 3.0  # Ratings > threshold are considered positive (1), else negative (0)
+RATING_THRESHOLD = 4.0  # Ratings > threshold are considered positive (1), else negative (0)
 
 # Negative sampling settings
 NEGATIVE_SAMPLING_RATIO = 4

@@ -12,8 +12,10 @@ A production-ready, modular PyTorch-based movie recommendation system following 
 
 ### **🤖 Model Implementations**
 - **Collaborative Filtering**: Matrix factorization with embeddings and bias terms
+- **Content-Based Filtering**: Genre-based recommendations with user preferences
+- **Hybrid Models**: Combined collaborative and content-based approaches
+- **Deep Collaborative**: Deep neural networks for collaborative filtering
 - **Extensible Framework**: BaseModel abstract class for easy model additions
-- **Ready for Extension**: Structure supports CNN, RNN, Transformer models
 
 ### **📊 Comprehensive Evaluation**
 - **Multiple Metrics**: RMSE, MAE, Precision@K, Recall@K, NDCG
@@ -49,7 +51,7 @@ python train_simple.py --epochs 10
 
 ### **Using the Trained Model**
 ```python
-from models import CollaborativeFilteringModel
+from models import CollaborativeFilteringModel, ContentBasedModel, HybridModel, DeepCollaborativeFiltering
 from data import MovieLensDataLoader
 import torch
 
@@ -86,9 +88,18 @@ reco_app/
 ├── models/                           # Model architectures 🧠
 │   ├── __init__.py                   # Package initialization
 │   ├── model.py                      # BaseModel abstract class
-│   └── collaborative/                # Collaborative filtering models
+│   ├── collaborative/                # Collaborative filtering models
+│   │   ├── __init__.py               # Package init
+│   │   └── collaborative_filtering.py # Matrix factorization model
+│   ├── content_based/                # Content-based models
+│   │   ├── __init__.py               # Package init
+│   │   └── content_based_model.py    # Genre-based model
+│   ├── hybrid/                       # Hybrid recommendation models
+│   │   ├── __init__.py               # Package init
+│   │   └── hybrid_model.py           # Combined approach model
+│   └── deep/                         # Deep learning models
 │       ├── __init__.py               # Package init
-│       └── collaborative_filtering.py # Matrix factorization model
+│       └── deep_collaborative_filtering.py # Deep CF model
 │
 ├── data/                             # Data handling 📊
 │   ├── __init__.py                   # Package initialization
@@ -150,11 +161,35 @@ TRAIN_CONFIG = {
 
 ## 🧠 Model Architectures
 
+### **Complete Model Suite**
+1. **Collaborative Filtering Model**: Matrix factorization with user/movie embeddings and bias terms
+2. **Content-Based Model**: Genre-based recommendations using neural networks
+3. **Hybrid Model**: Combines collaborative and content-based approaches with fusion layers
+4. **Deep Collaborative Filtering**: Multi-layer neural network for complex pattern learning
+
 ### **Collaborative Filtering Model**
 - **Matrix Factorization**: User and movie embeddings
 - **Bias Terms**: User and movie biases for better predictions
 - **Regularization**: Dropout for preventing overfitting
 - **Flexible Architecture**: Configurable embedding dimensions
+
+### **Content-Based Model**
+- **Genre Embeddings**: Learn genre representations
+- **User Preferences**: Neural network for user preference modeling
+- **Feature Fusion**: Combine genre and user features
+- **Configurable Architecture**: Adjustable hidden layer dimensions
+
+### **Hybrid Model**
+- **Multi-Component**: Collaborative + Content-based features
+- **Fusion Layers**: Neural networks to combine different signals
+- **Weighted Combination**: Learnable weights for different components
+- **End-to-End Training**: Joint optimization of all components
+
+### **Deep Collaborative Filtering**
+- **Multi-Layer Architecture**: Deep neural networks for user-movie interactions
+- **Non-Linear Patterns**: Capture complex user-item relationships
+- **Configurable Depth**: Adjustable number of hidden layers
+- **Dropout Regularization**: Prevent overfitting in deep architectures
 
 ### **BaseModel Abstract Class**
 ```python

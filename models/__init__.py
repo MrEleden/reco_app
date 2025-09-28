@@ -9,9 +9,9 @@ from .hybrid.hybrid_model import HybridModel
 from .deep.deep_collaborative_filtering import DeepCollaborativeFiltering
 
 __all__ = [
-    'BaseModel',
-    'CollaborativeFilteringModel',
-    'ContentBasedModel',
-    'HybridModel',
-    'DeepCollaborativeFiltering',
+    "BaseModel",
+    "CollaborativeFilteringModel",
+    "ContentBasedModel",
+    "HybridModel",
+    "DeepCollaborativeFiltering",
 ]

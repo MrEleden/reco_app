@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 import plotly.express as px
 import plotly.graph_objects as go
+from sklearn.preprocessing import LabelEncoder
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -43,32 +44,64 @@ logger = logging.getLogger(__name__)
 class MLflowModelManager:
     """Manages MLflow models and experiments."""
 
-    def __init__(self, tracking_uri: str = "file:../mlruns"):
-        self.tracking_uri = tracking_uri
-        mlflow.set_tracking_uri(tracking_uri)
+    def __init__(self, tracking_uri: str = None):
+        if tracking_uri is None:
+            # Auto-detect the best MLflow location by checking for movie_recommendation experiment
+            local_mlruns = Path("./mlruns")
+            parent_mlruns = Path("../mlruns")
+
+            # Check which location has the movie_recommendation experiment
+            self.tracking_uri = None
+
+            # Test parent mlruns first (more likely to have models)
+            if parent_mlruns.exists():
+                test_uri = f"file:../mlruns"
+                mlflow.set_tracking_uri(test_uri)
+                try:
+                    experiment = mlflow.get_experiment_by_name("movie_recommendation")
+                    if experiment:
+                        self.tracking_uri = test_uri
+                        logger.info("✅ Found movie_recommendation experiment in parent MLflow: ../mlruns")
+                except:
+                    pass
+
+            # If not found in parent, try local
+            if not self.tracking_uri and local_mlruns.exists():
+                test_uri = f"file:./mlruns"
+                mlflow.set_tracking_uri(test_uri)
+                try:
+                    experiment = mlflow.get_experiment_by_name("movie_recommendation")
+                    if experiment:
+                        self.tracking_uri = test_uri
+                        logger.info("✅ Found movie_recommendation experiment in local MLflow: ./mlruns")
+                except:
+                    pass
+
+            # Default fallback to parent
+            if not self.tracking_uri:
+                self.tracking_uri = f"file:../mlruns"
+                logger.warning("❌ movie_recommendation experiment not found, using default: ../mlruns")
+        else:
+            self.tracking_uri = tracking_uri
+
+        mlflow.set_tracking_uri(self.tracking_uri)
+        logger.info(f"🔗 MLflow tracking URI set to: {self.tracking_uri}")
 
     def get_all_models(self) -> pd.DataFrame:
-        """Get all models from MLflow with their metrics."""
+        """Get all models from MLflow with their metrics - SAME ORDER AS INFERENCE.PY."""
         try:
             experiment = mlflow.get_experiment_by_name("movie_recommendation")
             if not experiment:
                 return pd.DataFrame()
 
+            # Use EXACT same logic as inference.py for consistency
             runs = mlflow.search_runs(
                 experiment_ids=[experiment.experiment_id],
                 filter_string="status = 'FINISHED'",
-                order_by=["metrics.val_rmse ASC"],
+                order_by=["metrics.val_rmse ASC"],  # Same as inference.py
             )
 
-            # Filter runs with proper model names
-            if not runs.empty:
-                good_runs = runs[runs["params.model.name"].notna() & (runs["params.model.name"] != "None")]
-                if not good_runs.empty:
-                    return good_runs.head(10)
-                else:
-                    return runs.head(10)
-
-            return runs
+            return runs  # Return ALL runs, let caller handle filtering
         except Exception as e:
             logger.error(f"Error fetching models: {e}")
             return pd.DataFrame()
@@ -86,9 +119,8 @@ class MLflowModelManager:
         """Load a model from MLflow."""
         try:
             model_uri = f"runs:/{run_id}/model"
-            # Load model with proper device handling
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            model = mlflow.pytorch.load_model(model_uri, map_location=device)
+            # Force CPU for consistency and to avoid device issues
+            model = mlflow.pytorch.load_model(model_uri, map_location="cpu")
             model.eval()
             return model
         except Exception as e:
@@ -102,47 +134,158 @@ class MovieRecommendationDemo:
     def __init__(self):
         self.mlflow_manager = MLflowModelManager()
         self.movies_df = self.load_movie_data()
+        self.ratings_df = self.load_ratings_data()
         self.model = None
         self.current_run_id = None
         self.models_info = self.get_models_info()
 
+        # Initialize encoders for proper user/movie ID mapping
+        self.user_encoder = None
+        self.movie_encoder = None
+        self._setup_encoders()
+
+        # Auto-load the best model for immediate use
+        self._auto_load_best_model()
+
     def load_movie_data(self) -> pd.DataFrame:
-        """Load movie metadata for recommendations."""
+        """Load movie metadata for recommendations - prioritize real MovieLens data."""
         try:
-            # Look for data in parent directory since we're in apps/
-            movies_path = (
-                Path("../data/movies.csv") if not Path("data/movies.csv").exists() else Path("data/movies.csv")
-            )
-            if movies_path.exists():
-                movies_df = pd.read_csv(movies_path)
+            # PRIORITIZE REAL MOVIELENS DATA over sample data
+            # Fix path resolution from apps/ directory
+            movies_path_raw = Path("../data/raw/movies.csv")
+            if movies_path_raw.exists():
+                movies_df = pd.read_csv(movies_path_raw)
+                logger.info(f"✅ Loaded {len(movies_df)} movies from {movies_path_raw} (Real MovieLens data)")
                 return movies_df
             else:
-                # Create sample movie data for demo
-                sample_movies = {
-                    "movieId": list(range(1, 101)),
-                    "title": [f"Movie {i}" for i in range(1, 101)],
-                    "genres": ["Action|Adventure"] * 100,
-                }
-                return pd.DataFrame(sample_movies)
+                # Try from current directory
+                movies_path_raw = Path("data/raw/movies.csv")
+                if movies_path_raw.exists():
+                    movies_df = pd.read_csv(movies_path_raw)
+                    logger.info(f"✅ Loaded {len(movies_df)} movies from {movies_path_raw} (Real MovieLens data)")
+                    return movies_df
+                else:
+                    # Fallback options
+                    movies_path = (
+                        Path("../data/movies.csv") if not Path("data/movies.csv").exists() else Path("data/movies.csv")
+                    )
+                    if movies_path.exists():
+                        movies_df = pd.read_csv(movies_path)
+                        logger.info(f"⚠️ Loaded {len(movies_df)} movies from {movies_path} (Sample data)")
+                        return movies_df
+                    else:
+                        # Create sample movie data for demo
+                        logger.warning("❌ No movie data found, creating sample data")
+                        sample_movies = {
+                            "movieId": list(range(1, 101)),
+                            "title": [f"Movie {i}" for i in range(1, 101)],
+                            "genres": ["Action|Adventure"] * 100,
+                        }
+                        return pd.DataFrame(sample_movies)
         except Exception as e:
             logger.error(f"Error loading movie data: {e}")
             return pd.DataFrame()
 
+    def load_ratings_data(self) -> pd.DataFrame:
+        """Load ratings data for encoder training."""
+        try:
+            # PRIORITIZE REAL MOVIELENS DATA over sample data
+            # Fix path resolution from apps/ directory
+            ratings_path_raw = Path("../data/raw/ratings.csv")
+            if ratings_path_raw.exists():
+                ratings_df = pd.read_csv(ratings_path_raw)
+                logger.info(f"✅ Loaded {len(ratings_df)} ratings from {ratings_path_raw} (Real MovieLens data)")
+                return ratings_df
+            else:
+                # Try from current directory
+                ratings_path_raw = Path("data/raw/ratings.csv")
+                if ratings_path_raw.exists():
+                    ratings_df = pd.read_csv(ratings_path_raw)
+                    logger.info(f"✅ Loaded {len(ratings_df)} ratings from {ratings_path_raw} (Real MovieLens data)")
+                    return ratings_df
+                else:
+                    # Fallback to sample data
+                    ratings_path = (
+                        Path("../data/ratings.csv")
+                        if not Path("data/ratings.csv").exists()
+                        else Path("data/ratings.csv")
+                    )
+                    if ratings_path.exists():
+                        ratings_df = pd.read_csv(ratings_path)
+                        logger.info(f"⚠️ Loaded {len(ratings_df)} ratings from {ratings_path} (Sample data)")
+                        return ratings_df
+                    else:
+                        logger.warning("❌ No ratings data found")
+                        return pd.DataFrame()
+        except Exception as e:
+            logger.error(f"Error loading ratings data: {e}")
+            return pd.DataFrame()
+
+    def _setup_encoders(self):
+        """Set up user and movie ID encoders."""
+        try:
+            if not self.ratings_df.empty:
+                # Create encoders from the same data used in training
+                self.user_encoder = LabelEncoder()
+                self.movie_encoder = LabelEncoder()
+
+                # Fit encoders on unique IDs
+                unique_users = sorted(self.ratings_df["userId"].unique())
+                unique_movies = sorted(self.ratings_df["movieId"].unique())
+
+                self.user_encoder.fit(unique_users)
+                self.movie_encoder.fit(unique_movies)
+
+                logger.info(f"✅ Encoders ready: {len(unique_users)} users, {len(unique_movies)} movies")
+            else:
+                logger.warning("❌ No ratings data available for encoder training")
+        except Exception as e:
+            logger.error(f"Error setting up encoders: {e}")
+
+    def _auto_load_best_model(self):
+        """Auto-load the best model on startup (same as inference.py uses)."""
+        try:
+            if self.models_info and len(self.models_info) > 0:
+                # Load the first model (best performing)
+                best_model_info = self.models_info[0]
+                run_id = best_model_info[1]
+
+                if run_id and run_id != "N/A":
+                    self.model = self.mlflow_manager.load_model(run_id)
+                    self.current_run_id = run_id
+                    if self.model:
+                        logger.info(f"✅ Auto-loaded best model: {best_model_info[0]}")
+                    else:
+                        logger.warning("❌ Failed to auto-load best model")
+                else:
+                    logger.warning("❌ No valid run_id for best model")
+            else:
+                logger.warning("❌ No models available for auto-loading")
+        except Exception as e:
+            logger.error(f"Error auto-loading best model: {e}")
+
     def get_models_info(self) -> List[Tuple[str, str, float, float]]:
-        """Get information about available models."""
+        """Get information about available models - SAME SELECTION AS INFERENCE.PY."""
         models_df = self.mlflow_manager.get_all_models()
 
         if models_df.empty:
             return [("No models available", "N/A", 0.0, 0.0)]
 
+        # Use SAME logic as inference.py: take top 10 runs ordered by RMSE
         models_info = []
         for idx, row in models_df.head(10).iterrows():
-            model_name = row.get("params.model.name", "Unknown")
+            # Get model name with fallback logic
+            model_name = row.get("params.model.name", row.get("params.model", f"Model {row['run_id'][:8]}"))
+            if pd.isna(model_name) or model_name == "None":
+                model_name = f"Model {row['run_id'][:8]}"
+
             rmse = row.get("metrics.val_rmse", 0.0)
             accuracy = row.get("metrics.val_accuracy", 0.0)
             run_id = row.get("run_id", "")
 
-            display_name = f"{model_name} (RMSE: {rmse:.4f}, Acc: {accuracy:.1%})"
+            # Mark the BEST model (same as inference.py uses) for easy identification
+            best_marker = " ⭐ BEST" if idx == 0 else ""
+            display_name = f"{model_name} (RMSE: {rmse:.4f}, Acc: {accuracy:.1%}){best_marker}"
             models_info.append((display_name, run_id, rmse, accuracy))
 
         return models_info
@@ -171,7 +314,7 @@ class MovieRecommendationDemo:
             return f"❌ Error loading model: {str(e)}"
 
     def get_recommendations(self, user_id: int, num_recommendations: int) -> Tuple[str, str]:
-        """Generate movie recommendations for a user."""
+        """Generate movie recommendations with proper user/movie ID encoding."""
         try:
             if self.model is None:
                 return "❌ No model loaded. Please select and load a model first.", ""
@@ -179,23 +322,26 @@ class MovieRecommendationDemo:
             if user_id < 1 or user_id > 610:
                 return "❌ User ID must be between 1 and 610.", ""
 
-            # Get available movie IDs
-            if self.movies_df.empty:
-                movie_ids = list(range(1, 101))
-            else:
-                movie_ids = self.movies_df["movieId"].tolist()
+            # Check if encoders are available
+            if self.user_encoder is None or self.movie_encoder is None:
+                return "❌ User/Movie encoders not available. Please check data loading.", ""
 
-            # Limit for demo
-            movie_ids = movie_ids[:1000]
+            # CRITICAL: Encode user ID (1-610 → 0-609 for model input)
+            try:
+                encoded_user_id = self.user_encoder.transform([user_id])[0]
+            except ValueError:
+                return f"❌ User ID {user_id} not found in training data. Please use a valid user ID.", ""
 
-            # Create tensors
-            user_tensor = torch.tensor([user_id] * len(movie_ids), dtype=torch.long)
-            movie_tensor = torch.tensor(movie_ids, dtype=torch.long)
+            # CRITICAL: Use encoded movie indices (not original IDs) for model input
+            num_movies = len(self.movie_encoder.classes_)
+            available_movie_indices = list(range(min(1000, num_movies)))  # Limit for performance
 
-            # Move tensors to same device as model
-            device = next(self.model.parameters()).device
-            user_tensor = user_tensor.to(device)
-            movie_tensor = movie_tensor.to(device)
+            # Create tensors with ENCODED indices (force CPU for consistency)
+            user_tensor = torch.tensor([encoded_user_id] * len(available_movie_indices), dtype=torch.long, device="cpu")
+            movie_tensor = torch.tensor(available_movie_indices, dtype=torch.long, device="cpu")
+
+            # Ensure model is on CPU
+            self.model = self.model.cpu()
 
             # Generate predictions
             self.model.eval()
@@ -208,16 +354,19 @@ class MovieRecommendationDemo:
 
             recommendations = []
             for idx in top_indices:
-                movie_id = movie_ids[idx]
+                encoded_movie_id = available_movie_indices[idx]  # This is the encoded index
                 score = scores_np[idx]
+
+                # CRITICAL: Decode back to original movie ID
+                original_movie_id = self.movie_encoder.classes_[encoded_movie_id]
 
                 # Get movie title
                 if not self.movies_df.empty:
-                    movie_row = self.movies_df[self.movies_df["movieId"] == movie_id]
-                    title = movie_row["title"].iloc[0] if not movie_row.empty else f"Movie {movie_id}"
+                    movie_row = self.movies_df[self.movies_df["movieId"] == original_movie_id]
+                    title = movie_row["title"].iloc[0] if not movie_row.empty else f"Movie {original_movie_id}"
                     genre = movie_row["genres"].iloc[0] if not movie_row.empty else "Unknown"
                 else:
-                    title = f"Movie {movie_id}"
+                    title = f"Movie {original_movie_id}"
                     genre = "Action|Adventure"
 
                 recommendations.append(
@@ -225,7 +374,8 @@ class MovieRecommendationDemo:
                 )
 
             # Format recommendations as a nice table
-            rec_text = f"🎬 **Top {num_recommendations} Movie Recommendations for User {user_id}**\n\n"
+            rec_text = f"🎬 **Top {num_recommendations} Movie Recommendations for User {user_id}**\n"
+            rec_text += f"📊 *User {user_id} encoded as {encoded_user_id} for model input*\n\n"
 
             for rec in recommendations:
                 rec_text += f"**{rec['rank']}.** {rec['title']}\n"
@@ -369,7 +519,10 @@ def create_gradio_interface():
             with gr.Row():
                 with gr.Column():
                     model_dropdown = gr.Dropdown(
-                        choices=model_choices, label="🤖 Select Model", info="Choose from trained recommendation models"
+                        choices=model_choices,
+                        value=model_choices[0] if model_choices else None,  # Auto-select best model
+                        label="🤖 Select Model",
+                        info="Choose from trained recommendation models (⭐ marks the best performing model)",
                     )
                     load_btn = gr.Button("📥 Load Model", variant="primary")
                     load_status = gr.Textbox(label="Load Status", interactive=False)

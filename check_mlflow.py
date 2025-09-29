@@ -17,14 +17,24 @@ try:
 
     if not comparison.empty:
         print(f"Found {len(comparison)} model runs!")
+
+        # Show best model prominently
+        best_model = comparison.iloc[0]
+        print(f"\n*** BEST MODEL ***")
+        print(f"   Model: {best_model['model_type']}")
+        print(f"   RMSE: {best_model['val_rmse']:.4f}")
+        print(f"   Accuracy: {best_model['val_accuracy']:.4f}")
+        print(f"   Status: {best_model['status']}")
+
         print("\nModel Performance Summary:")
         print("-" * 40)
 
         for idx, row in comparison.head(10).iterrows():
-            print(f"{idx+1}. Model: {row['model_type']}")
-            print(f"   RMSE: {row['val_rmse']:.4f}")
-            print(f"   Accuracy: {row['val_accuracy']:.4f}")
-            print(f"   Status: {row['status']}")
+            prefix = ">>>" if idx == 0 else "   "
+            print(f"{prefix} {idx+1}. Model: {row['model_type']}")
+            print(f"      RMSE: {row['val_rmse']:.4f}")
+            print(f"      Accuracy: {row['val_accuracy']:.4f}")
+            print(f"      Status: {row['status']}")
             print()
     else:
         print("No completed runs found yet.")

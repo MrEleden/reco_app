@@ -15,11 +15,13 @@ from pathlib import Path
 
 # Add parent directory to path for imports
 import os
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import our global inference engine
 try:
     from inference import get_recommendation_engine, recommend_movies, get_user_list
+
     INFERENCE_AVAILABLE = True
 except ImportError as e:
     st.error(f"Could not import inference module: {e}")
@@ -77,56 +79,56 @@ def main():
         st.metric("Users", model_info["num_users"])
         st.metric("Movies", model_info["num_movies"])
         st.info(f"Device: {model_info['device']}")
-        
+
         # Model selection
         st.markdown("---")
         st.header("🎯 Model Selection")
-        
+
         # Current model info
-        if 'name' in model_info:
+        if "name" in model_info:
             st.info(f"**Current Model:** {model_info['name']}")
-            if 'rmse' in model_info:
+            if "rmse" in model_info:
                 st.metric("RMSE", f"{model_info['rmse']:.4f}")
-            if 'accuracy' in model_info:
+            if "accuracy" in model_info:
                 st.metric("Accuracy", f"{model_info['accuracy']:.3f}")
-        
+
         # Available models
         available_models = engine.get_available_models()
         if available_models:
             st.markdown("**Available Models:**")
-            
+
             model_options = {}
             for model in available_models:
                 display_name = f"{model['name']} (RMSE: {model['rmse']:.4f})"
-                model_options[display_name] = model['run_id']
-            
+                model_options[display_name] = model["run_id"]
+
             # Current selection
             current_display = None
-            if 'run_id' in model_info:
+            if "run_id" in model_info:
                 for display, run_id in model_options.items():
-                    if run_id == model_info['run_id']:
+                    if run_id == model_info["run_id"]:
                         current_display = display
                         break
-            
+
             # Model selector
             selected_display = st.selectbox(
                 "Choose Model:",
                 options=list(model_options.keys()),
                 index=list(model_options.keys()).index(current_display) if current_display else 0,
-                help="Select a different model to use for recommendations"
+                help="Select a different model to use for recommendations",
             )
-            
+
             # Load selected model
             selected_run_id = model_options[selected_display]
-            if 'run_id' not in model_info or selected_run_id != model_info['run_id']:
+            if "run_id" not in model_info or selected_run_id != model_info["run_id"]:
                 if st.button("🔄 Load Selected Model"):
                     with st.spinner("Loading model..."):
                         if engine.load_model_by_run_id(selected_run_id):
                             st.success("✅ Model loaded successfully!")
-                            st.experimental_rerun()
+                            st.rerun()
                         else:
                             st.error("❌ Failed to load model")
-        
+
         # Available users info
         if model_info["encoders_loaded"]:
             available_users = engine.get_available_users()

@@ -320,3 +320,6 @@ scratch/
 *~
 .project
 .pydevproject
+
+# Ignore deployment directories
+movie-reco-demo/

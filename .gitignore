@@ -1,5 +1,7 @@
 # Python
 __pycache__/
+*/__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -170,6 +172,7 @@ checkpoints/
 models/
 saved_models/
 experiments/
+weights/
 
 # Hydra outputs
 .hydra/

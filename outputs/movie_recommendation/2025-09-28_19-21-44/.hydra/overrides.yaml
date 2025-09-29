@@ -1,4 +1,0 @@
-- model=collaborative
-- optimizer=adam_variant
-- train.epochs=2
-- train.batch_size=256

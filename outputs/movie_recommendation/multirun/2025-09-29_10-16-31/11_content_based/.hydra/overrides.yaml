@@ -1,7 +1,0 @@
-- model=content_based
-- train.learning_rate=0.001
-- train.batch_size=128
-- model.dropout=0.2
-- train.weight_decay=0.0005
-- train.patience=12
-- train=production

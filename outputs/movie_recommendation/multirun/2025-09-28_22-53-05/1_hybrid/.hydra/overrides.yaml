@@ -1,3 +1,0 @@
-- model=hybrid
-- train.epochs=10
-- train.patience=10

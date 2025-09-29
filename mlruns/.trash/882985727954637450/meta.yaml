@@ -1,8 +1,0 @@
-artifact_location: file:///C:/Users/mvill/github/reco_app/mlruns/882985727954637450
-creation_time: 1759131963933
-experiment_id: '882985727954637450'
-last_update_time: 1759137095134
-lifecycle_stage: deleted
-name: optuna_test
-tags:
-  mlflow.experimentKind: custom_model_development

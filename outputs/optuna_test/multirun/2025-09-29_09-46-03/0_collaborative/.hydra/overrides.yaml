@@ -1,3 +1,0 @@
-- train.learning_rate=0.005
-- train.batch_size=256
-- model.embedding_dim=50

@@ -1,0 +1,4 @@
+- model=collaborative
+- optimizer=sgd
+- train.learning_rate=0.05
+- train.epochs=3

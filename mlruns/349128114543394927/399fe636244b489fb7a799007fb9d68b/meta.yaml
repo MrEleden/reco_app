@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/349128114543394927/399fe636244b489fb7a799007fb9d68b/artifacts
+end_time: 1759131636171
+entry_point_name: ''
+experiment_id: '349128114543394927'
+lifecycle_stage: active
+run_id: 399fe636244b489fb7a799007fb9d68b
+run_name: content_based_production_first
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759131087077
+status: 3
+tags: []
+user_id: mavil

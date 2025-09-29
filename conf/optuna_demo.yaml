@@ -1,0 +1,44 @@
+# Optuna Demo Configuration - Complete Tech Stack Integration
+# Usage: python demo_tech_stack.py --config-name=optuna_demo -m
+
+defaults:
+  - model: hybrid  # Best performing model
+  - train: default
+  - data: default
+  - optimizer: adam
+  - override hydra/sweeper: optuna_quick
+  - _self_
+
+# Demo experiment settings
+experiment:
+  name: "tech_stack_demo_optuna"
+  tags: ["demo", "optuna", "complete_integration"]
+  notes: "Demonstrating complete tech stack with PyTorch + Hydra + MLflow + Optuna"
+
+# Quick settings for demo
+train:
+  epochs: 8  # Reduced for demo
+  patience: 4
+  early_stopping: true
+
+# Global settings
+seed: 42
+device: "auto"
+
+# MLflow integration
+mlflow:
+  tracking_uri: null
+  experiment_name: "${experiment.name}"
+  enable: true
+  log_models: true  # Log best models
+  log_artifacts: true
+
+# Hydra settings
+hydra:
+  run:
+    dir: "outputs/${experiment.name}/${now:%Y-%m-%d_%H-%M-%S}"
+  sweep:
+    dir: "outputs/${experiment.name}/multirun/${now:%Y-%m-%d_%H-%M-%S}"
+    subdir: "trial_${hydra:job.num}_${model.name}"
+  job:
+    name: "${experiment.name}_optuna_trial"

@@ -40,7 +40,7 @@ class MovieLensDataLoader:
         # Check if required data files exist
         if not os.path.exists(movies_path):
             raise FileNotFoundError(f"Movies data file not found: {movies_path}")
-        
+
         if not os.path.exists(ratings_path):
             raise FileNotFoundError(f"Ratings data file not found: {ratings_path}")
 
@@ -84,7 +84,7 @@ class MovieLensDataLoader:
         # Validate data
         if len(self.ratings_df) == 0:
             raise ValueError("Ratings data is empty")
-        
+
         if len(self.movies_df) == 0:
             raise ValueError("Movies data is empty")
 
@@ -132,7 +132,7 @@ class MovieLensDataLoader:
         """Get data for content-based filtering."""
         if self.ratings_df is None:
             raise RuntimeError("Ratings data not available - check data loading")
-        
+
         if self.movies_df is None:
             raise RuntimeError("Movies data not available - check data loading")
 

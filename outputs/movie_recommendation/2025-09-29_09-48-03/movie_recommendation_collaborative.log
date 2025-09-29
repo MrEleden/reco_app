@@ -1,0 +1,105 @@
+[2025-09-29 09:48:03,283][__main__][INFO] - ==================================================
+[2025-09-29 09:48:03,284][__main__][INFO] -    Model: collaborative
+[2025-09-29 09:48:03,284][__main__][INFO] -    Learning Rate: 0.01
+[2025-09-29 09:48:03,284][__main__][INFO] -    Batch Size: 256
+[2025-09-29 09:48:03,284][__main__][INFO] -    Epochs: 3
+[2025-09-29 09:48:05,816][train_hydra][INFO] - Configuration:
+[2025-09-29 09:48:05,818][train_hydra][INFO] - model:
+  name: collaborative
+  type: CollaborativeFilteringModel
+  embedding_dim: 50
+  dropout: 0.2
+  bias: true
+  init_mean: 0.0
+  init_std: 0.1
+  description: Matrix factorization with user and movie embeddings
+train:
+  name: default
+  batch_size: 256
+  learning_rate: 0.01
+  weight_decay: 0.0001
+  epochs: 3
+  patience: 5
+  min_delta: 0.0001
+  scheduler:
+    type: reduce_on_plateau
+    factor: 0.5
+    patience: 3
+    min_lr: 1.0e-06
+    verbose: true
+  loss:
+    type: bce
+    margin: 1.0
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@10
+  - recall@10
+  - ndcg@10
+  top_k:
+  - 5
+  - 10
+  - 20
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+mlflow:
+  tracking_uri: null
+  experiment_name: ${experiment.name}
+  enable: true
+  log_models: true
+  log_artifacts: true
+
+[2025-09-29 09:48:06,195][train_hydra][INFO] - MLflow run started: 05baa132c4b843cb8605bc4f3ed528e0
+[2025-09-29 09:48:06,205][train_hydra][INFO] - Using device: cuda
+[2025-09-29 09:48:06,228][train_hydra][INFO] - Loading data...
+[2025-09-29 09:48:06,267][train_hydra][INFO] - Loaded 100836 user-movie interactions
+[2025-09-29 09:48:06,267][train_hydra][INFO] - Users: 610, Movies: 9742
+[2025-09-29 09:48:06,951][train_hydra][INFO] - Creating model: CollaborativeFilteringModel
+[2025-09-29 09:48:07,023][train_hydra][INFO] - Model created with 527,953 parameters
+[2025-09-29 09:48:07,930][train_hydra][INFO] - Starting training...
+[2025-09-29 09:48:11,834][train_hydra][INFO] - Epoch 1/3: Train Loss: 0.4243, Val Loss: 0.3994
+[2025-09-29 09:48:11,834][train_hydra][INFO] - Train Metrics: {'rmse': np.float64(0.3624325755324684), 'mae': 0.28287437558174133, 'accuracy': np.float64(0.8290297184885882), 'precision': np.float64(0.7548387096774194), 'recall': np.float64(0.05449905826599429), 'f1': np.float64(0.10165841864682104)}
+[2025-09-29 09:48:11,834][train_hydra][INFO] - Val Metrics: {'rmse': np.float64(0.34993089777118935), 'mae': 0.26044851541519165, 'accuracy': np.float64(0.8320555787293413), 'precision': np.float64(0.7587822014051522), 'recall': np.float64(0.0787746170678337), 'f1': np.float64(0.14273127753303963)}
+[2025-09-29 09:48:12,076][train_hydra][INFO] - New best model saved: best_model_collaborative.pth
+[2025-09-29 09:48:15,990][train_hydra][INFO] - Epoch 2/3: Train Loss: 0.3953, Val Loss: 0.3956
+[2025-09-29 09:48:15,990][train_hydra][INFO] - Train Metrics: {'rmse': np.float64(0.34766027898275487), 'mae': 0.25873512029647827, 'accuracy': np.float64(0.8346628225913717), 'precision': np.float64(0.8), 'recall': np.float64(0.09137857707029588), 'f1': np.float64(0.16402202955450135)}
+[2025-09-29 09:48:15,990][train_hydra][INFO] - Val Metrics: {'rmse': np.float64(0.3475641064208014), 'mae': 0.2608632445335388, 'accuracy': np.float64(0.8347165686175798), 'precision': np.float64(0.7572815533980582), 'recall': np.float64(0.1011427182105519), 'f1': np.float64(0.17845141917494814)}
+[2025-09-29 09:48:16,236][train_hydra][INFO] - New best model saved: best_model_collaborative.pth
+[2025-09-29 09:48:20,854][train_hydra][INFO] - Epoch 3/3: Train Loss: 0.3932, Val Loss: 0.3947
+[2025-09-29 09:48:20,854][train_hydra][INFO] - Train Metrics: {'rmse': np.float64(0.3465878969557641), 'mae': 0.2574918270111084, 'accuracy': np.float64(0.8353674099584077), 'precision': np.float64(0.7978369384359401), 'recall': np.float64(0.09710999048139822), 'f1': np.float64(0.17314532290970805)}
+[2025-09-29 09:48:20,854][train_hydra][INFO] - Val Metrics: {'rmse': np.float64(0.34759510231183705), 'mae': 0.25837504863739014, 'accuracy': np.float64(0.8343425916603139), 'precision': np.float64(0.7747326203208557), 'recall': np.float64(0.09392981603047248), 'f1': np.float64(0.16754607878568847)}
+[2025-09-29 09:48:21,106][train_hydra][INFO] - New best model saved: best_model_collaborative.pth
+[2025-09-29 09:48:21,106][train_hydra][INFO] - Training completed!
+[2025-09-29 09:48:21,106][train_hydra][INFO] - Best validation loss: 0.3947
+[2025-09-29 09:48:25,443][train_hydra][INFO] - MLflow run completed

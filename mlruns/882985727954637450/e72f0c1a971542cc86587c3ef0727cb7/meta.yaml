@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/882985727954637450/e72f0c1a971542cc86587c3ef0727cb7/artifacts
+end_time: 1759131980561
+entry_point_name: ''
+experiment_id: '882985727954637450'
+lifecycle_stage: active
+run_id: e72f0c1a971542cc86587c3ef0727cb7
+run_name: collaborative_optuna_test
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759131964301
+status: 3
+tags: []
+user_id: mavil

@@ -1,0 +1,26 @@
+# Optuna Hyperparameter Optimization Experiment
+# Usage: python train_hydra.py experiment=optuna_hpo -m
+
+# @package _global_
+defaults:
+  - override /train: fast  # Use fast training for quicker optimization
+  - override /model: hybrid  # Optimize the best performing model
+  - override /hydra/sweeper: optuna_quick  # Use Optuna for optimization
+
+experiment:
+  name: "optuna_hyperparameter_optimization" 
+  tags: ["optuna", "hyperparameter_optimization", "automated_ml"]
+  notes: "Automated hyperparameter optimization using Optuna"
+
+# Override settings for optimization
+# Reduce epochs for faster trials during optimization
+train:
+  epochs: 15  # Reduced from default for faster optimization
+  patience: 5
+  early_stopping: true
+  
+# Enable MLflow tracking for all Optuna trials
+mlflow:
+  enable: true
+  log_models: false  # Don't log models for every trial to save space
+  log_artifacts: false  # Reduce storage overhead

@@ -1,0 +1,23 @@
+# Quick Optuna Sweeper for Fast Testing
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+
+study_name: quick_hpo_test
+storage: null
+n_trials: 6
+n_jobs: 1
+direction: minimize
+
+# Use custom search space (set search_space to null)
+search_space: null
+custom_search_space: null
+
+# Use params for parameter ranges (Hydra sweep style)
+params:
+  train.learning_rate: 0.001,0.005,0.01,0.05
+  train.batch_size: 256,512  
+  model.embedding_dim: 32,50,64
+
+sampler:
+  _target_: optuna.samplers.TPESampler
+  seed: 42

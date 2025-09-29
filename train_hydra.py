@@ -196,7 +196,7 @@ def validate_epoch(model, data_loader, criterion, device, metrics):
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
-def main(cfg: DictConfig) -> None:
+def main(cfg: DictConfig) -> float:
     """Main training function."""
 
     # Print configuration
@@ -397,6 +397,10 @@ def main(cfg: DictConfig) -> None:
         # End MLflow run
         mlflow_tracker.end_run()
         log.info("MLflow run completed")
+
+    # Return the optimization metric for Optuna
+    # This is the key for Optuna integration - return the metric to optimize
+    return best_val_loss
 
 
 if __name__ == "__main__":

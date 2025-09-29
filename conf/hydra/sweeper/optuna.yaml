@@ -1,0 +1,57 @@
+# Optuna Sweeper Configuration for Hyperparameter Optimization
+# Usage: python train_hydra.py -m hydra/sweeper=optuna
+
+# @package hydra.sweeper
+_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+
+# Optuna study settings
+study_name: "movie_recommendation_hpo"
+storage: null  # Use in-memory storage, set to "sqlite:///optuna.db" for persistence
+n_trials: 20
+n_jobs: 1
+
+# Optimization direction
+direction: minimize  # minimize validation loss/RMSE
+
+# Search space configuration
+search_space:
+  # Model hyperparameters
+  model.embedding_dim:
+    type: choice
+    choices: [32, 50, 64, 100, 128]
+  
+  model.dropout:
+    type: float
+    low: 0.1
+    high: 0.5
+    step: 0.1
+  
+  # Training hyperparameters  
+  train.learning_rate:
+    type: float
+    low: 0.0001
+    high: 0.1
+    log: true
+  
+  train.batch_size:
+    type: choice
+    choices: [128, 256, 512, 1024]
+  
+  train.weight_decay:
+    type: float
+    low: 1e-6
+    high: 1e-3
+    log: true
+
+# Pruning settings (stop unpromising trials early)
+pruner:
+  _target_: optuna.pruners.MedianPruner
+  n_startup_trials: 3
+  n_warmup_steps: 5
+  interval_steps: 1
+
+# Sampler settings (optimization algorithm)
+sampler:
+  _target_: optuna.samplers.TPESampler
+  seed: 42
+  n_startup_trials: 5

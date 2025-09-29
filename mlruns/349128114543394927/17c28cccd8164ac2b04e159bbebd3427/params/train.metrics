@@ -1,0 +1,1 @@
+['rmse', 'mae', 'precision@5', 'precision@10', 'precision@20', 'recall@5', 'recall@10', 'recall@20', 'ndcg@10', 'f1']

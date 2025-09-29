@@ -1,0 +1,6 @@
+artifact_location: file:///C:/Users/mvill/github/reco_app/mlruns/341425735236858266
+creation_time: 1759130377716
+experiment_id: '341425735236858266'
+last_update_time: 1759130377716
+lifecycle_stage: active
+name: hybrid_lr_sweep

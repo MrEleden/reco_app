@@ -2,6 +2,14 @@
 
 Minimal, production-minded PyTorch recommender. Start simple, scale with Hydra, track with MLflow, and tune with Optuna. A Streamlit app provides an interactive demo.
 
+## 🚀 Try the Live Demo
+
+**🌐 Interactive Demo**: [https://huggingface.co/spaces/MrEleden/movie-reco-demo](https://huggingface.co/spaces/MrEleden/movie-reco-demo)
+
+Experience the recommendation system in your browser - no setup required!
+
+---
+
 ## Stack
 PyTorch • Hydra • MLflow • Optuna • Streamlit
 

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/3a8117bc5bf04c789288460aae006cde/artifacts
+end_time: 1759136481658
+entry_point_name: ''
+experiment_id: '289158589426816555'
+lifecycle_stage: active
+run_id: 3a8117bc5bf04c789288460aae006cde
+run_name: deep_cf_movie_recommendation
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759136373048
+status: 3
+tags: []
+user_id: mavil

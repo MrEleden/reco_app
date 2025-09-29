@@ -1,0 +1,328 @@
+[2025-09-29 10:20:56,245][__main__][INFO] - Configuration:
+[2025-09-29 10:20:56,247][__main__][INFO] - model:
+  name: hybrid
+  type: HybridModel
+  embedding_dim: 50
+  genre_embedding_dim: 32
+  collaborative_weight: 0.7
+  content_weight: 0.3
+  fusion_dims:
+  - 256
+  - 128
+  dropout: 0.2
+  description: Combined collaborative and content-based approach
+train:
+  name: production
+  batch_size: 512
+  learning_rate: 0.02
+  weight_decay: 0.0001
+  epochs: 100
+  patience: 12
+  min_delta: 1.0e-05
+  optimizer:
+    type: adam
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    amsgrad: true
+  scheduler:
+    type: cosine
+    T_max: 100
+    eta_min: 1.0e-06
+  loss:
+    type: bce
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@5
+  - precision@10
+  - precision@20
+  - recall@5
+  - recall@10
+  - recall@20
+  - ndcg@10
+  - f1
+  top_k:
+  - 5
+  - 10
+  - 20
+  - 50
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+mlflow:
+  tracking_uri: null
+  experiment_name: ${experiment.name}
+  enable: true
+  log_models: true
+  log_artifacts: true
+
+[2025-09-29 10:20:56,334][__main__][INFO] - MLflow run started: 93534b17f4454801a76d4edcac80a74f
+[2025-09-29 10:20:56,334][__main__][INFO] - Using device: cuda
+[2025-09-29 10:20:56,366][__main__][INFO] - Loading data...
+[2025-09-29 10:20:56,401][__main__][INFO] - Loaded 100836 user-movie interactions
+[2025-09-29 10:20:56,401][__main__][INFO] - Users: 610, Movies: 9742
+[2025-09-29 10:20:57,060][__main__][INFO] - Creating model: HybridModel
+[2025-09-29 10:20:57,175][__main__][INFO] - Model created with 549,154 parameters
+[2025-09-29 10:20:57,224][__main__][INFO] - Starting training...
+[2025-09-29 10:21:00,996][__main__][INFO] - Epoch 1/100: Train Loss: 0.3797, Val Loss: 0.3658
+[2025-09-29 10:21:00,997][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3407025721352405), 'mae': 0.23419584333896637, 'accuracy': np.float64(0.8431430348303418), 'precision': np.float64(0.6517305151915456), 'recall': np.float64(0.24979241347185938), 'f1': np.float64(0.36116072735791044)}
+[2025-09-29 10:21:00,997][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3349406289041521), 'mae': 0.2263517826795578, 'accuracy': np.float64(0.8460365634394373), 'precision': np.float64(0.6123093831570271), 'recall': np.float64(0.3612124159170111), 'f1': np.float64(0.4543786318686921)}
+[2025-09-29 10:21:01,241][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:21:05,536][__main__][INFO] - Epoch 2/100: Train Loss: 0.3591, Val Loss: 0.3618
+[2025-09-29 10:21:05,536][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.33192507224214685), 'mae': 0.22140197455883026, 'accuracy': np.float64(0.848747380265083), 'precision': np.float64(0.6527487239561542), 'recall': np.float64(0.3159770743463556), 'f1': np.float64(0.42582458821763397)}
+[2025-09-29 10:21:05,536][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3347832678437879), 'mae': 0.22438447177410126, 'accuracy': np.float64(0.8432461199890684), 'precision': np.float64(0.5832274459974587), 'recall': np.float64(0.40919037199124725), 'f1': np.float64(0.4809487521432653)}
+[2025-09-29 10:21:05,795][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:21:11,884][__main__][INFO] - Epoch 3/100: Train Loss: 0.3548, Val Loss: 0.3574
+[2025-09-29 10:21:11,884][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.330453444863717), 'mae': 0.219322070479393, 'accuracy': np.float64(0.8490924842815905), 'precision': np.float64(0.6522848909016056), 'recall': np.float64(0.3208781416448954), 'f1': np.float64(0.4301518997651594)}
+[2025-09-29 10:21:11,884][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3320347393076937), 'mae': 0.22345396876335144, 'accuracy': np.float64(0.8481509716209025), 'precision': np.float64(0.6359475129691792), 'recall': np.float64(0.337790744792933), 'f1': np.float64(0.44122161647170915)}
+[2025-09-29 10:21:12,152][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:21:16,364][__main__][INFO] - Epoch 4/100: Train Loss: 0.3539, Val Loss: 0.3620
+[2025-09-29 10:21:16,364][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.33021385742805526), 'mae': 0.2188458889722824, 'accuracy': np.float64(0.8494339934645927), 'precision': np.float64(0.6544884747020742), 'recall': np.float64(0.32144520728274295), 'f1': np.float64(0.431140327049492)}
+[2025-09-29 10:21:16,364][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3336453306357298), 'mae': 0.23960399627685547, 'accuracy': np.float64(0.8466550637918386), 'precision': np.float64(0.613716454323665), 'recall': np.float64(0.36696652889213066), 'f1': np.float64(0.45929908201044783)}
+[2025-09-29 10:21:21,016][__main__][INFO] - Epoch 5/100: Train Loss: 0.3540, Val Loss: 0.3591
+[2025-09-29 10:21:21,016][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3301216525659563), 'mae': 0.21889425814151764, 'accuracy': np.float64(0.850228451669261), 'precision': np.float64(0.6590515463917526), 'recall': np.float64(0.32367296514571564), 'f1': np.float64(0.4341342170671086)}
+[2025-09-29 10:21:21,016][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3333156315255675), 'mae': 0.22270433604717255, 'accuracy': np.float64(0.8467989010830949), 'precision': np.float64(0.6651663405088063), 'recall': np.float64(0.27546802820325794), 'f1': np.float64(0.38959252679236633)}
+[2025-09-29 10:21:25,467][__main__][INFO] - Epoch 6/100: Train Loss: 0.3538, Val Loss: 0.3601
+[2025-09-29 10:21:25,467][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.33034603825614645), 'mae': 0.21914908289909363, 'accuracy': np.float64(0.8495993558058359), 'precision': np.float64(0.6566903603940641), 'recall': np.float64(0.3199465338112887), 'f1': np.float64(0.4302639104502002)}
+[2025-09-29 10:21:25,467][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33353841577304183), 'mae': 0.21795965731143951, 'accuracy': np.float64(0.8465112265005825), 'precision': np.float64(0.6292221877905175), 'recall': np.float64(0.32911905340789366), 'f1': np.float64(0.4321821954983239)}
+[2025-09-29 10:21:30,056][__main__][INFO] - Epoch 7/100: Train Loss: 0.3535, Val Loss: 0.3575
+[2025-09-29 10:21:30,056][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3301037095667494), 'mae': 0.21862687170505524, 'accuracy': np.float64(0.8501565549991552), 'precision': np.float64(0.6619653081845739), 'recall': np.float64(0.3184276079956255), 'f1': np.float64(0.4300072474668052)}
+[2025-09-29 10:21:30,056][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33226204872673315), 'mae': 0.22581788897514343, 'accuracy': np.float64(0.8476043899141291), 'precision': np.float64(0.6598240469208211), 'recall': np.float64(0.29175784099197666), 'f1': np.float64(0.4046080359651587)}
+[2025-09-29 10:21:34,721][__main__][INFO] - Epoch 8/100: Train Loss: 0.3528, Val Loss: 0.3602
+[2025-09-29 10:21:34,721][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3298035783397761), 'mae': 0.21817277371883392, 'accuracy': np.float64(0.8508215991976331), 'precision': np.float64(0.6660484720758694), 'recall': np.float64(0.32002754318812404), 'f1': np.float64(0.4323274329019726)}
+[2025-09-29 10:21:34,721][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33246558335735377), 'mae': 0.21050620079040527, 'accuracy': np.float64(0.8488989255354343), 'precision': np.float64(0.646579283887468), 'recall': np.float64(0.3278223518923738), 'f1': np.float64(0.43506318902930896)}
+[2025-09-29 10:21:39,187][__main__][INFO] - Epoch 9/100: Train Loss: 0.3525, Val Loss: 0.3552
+[2025-09-29 10:21:39,188][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32974438470335315), 'mae': 0.21802254021167755, 'accuracy': np.float64(0.8505879350197896), 'precision': np.float64(0.659015059015059), 'recall': np.float64(0.3279259574295725), 'f1': np.float64(0.43793527796935644)}
+[2025-09-29 10:21:39,188][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33116493527393853), 'mae': 0.22560761868953705, 'accuracy': np.float64(0.8484817973907915), 'precision': np.float64(0.6484130899523105), 'recall': np.float64(0.3195558797309344), 'f1': np.float64(0.4281216069489685)}
+[2025-09-29 10:21:39,446][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:21:43,516][__main__][INFO] - Epoch 10/100: Train Loss: 0.3532, Val Loss: 0.3581
+[2025-09-29 10:21:43,516][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32975387447472754), 'mae': 0.2181960940361023, 'accuracy': np.float64(0.8516448160703437), 'precision': np.float64(0.6649174192498576), 'recall': np.float64(0.3310245660935253), 'f1': np.float64(0.44200164956259547)}
+[2025-09-29 10:21:43,516][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3325753410210288), 'mae': 0.22020964324474335, 'accuracy': np.float64(0.8473598665189938), 'precision': np.float64(0.6083845864189783), 'recall': np.float64(0.39281951535780857), 'f1': np.float64(0.4773958435930266)}
+[2025-09-29 10:21:48,054][__main__][INFO] - Epoch 11/100: Train Loss: 0.3523, Val Loss: 0.3606
+[2025-09-29 10:21:48,054][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3293158741783738), 'mae': 0.21752388775348663, 'accuracy': np.float64(0.8522343687652106), 'precision': np.float64(0.6636334863111252), 'recall': np.float64(0.3397128217591186), 'f1': np.float64(0.4493858250840555)}
+[2025-09-29 10:21:48,054][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33375159734708026), 'mae': 0.22790119051933289, 'accuracy': np.float64(0.8476331573723803), 'precision': np.float64(0.6229231202478175), 'recall': np.float64(0.3585379690412513), 'f1': np.float64(0.4551206213672136)}
+[2025-09-29 10:21:53,267][__main__][INFO] - Epoch 12/100: Train Loss: 0.3523, Val Loss: 0.3582
+[2025-09-29 10:21:53,267][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3296222812090569), 'mae': 0.21810956299304962, 'accuracy': np.float64(0.8517778249100393), 'precision': np.float64(0.6714375920858766), 'recall': np.float64(0.3230248901310327), 'f1': np.float64(0.43619756057539794)}
+[2025-09-29 10:21:53,267][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33201425172266047), 'mae': 0.21447502076625824, 'accuracy': np.float64(0.8492153675761978), 'precision': np.float64(0.668543407192154), 'recall': np.float64(0.29832239241429614), 'f1': np.float64(0.4125525357242925)}
+[2025-09-29 10:21:59,036][__main__][INFO] - Epoch 13/100: Train Loss: 0.3536, Val Loss: 0.3592
+[2025-09-29 10:21:59,037][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3299612594572212), 'mae': 0.21857544779777527, 'accuracy': np.float64(0.8513823932244579), 'precision': np.float64(0.6781043578490047), 'recall': np.float64(0.3097798570184499), 'f1': np.float64(0.42527872772263464)}
+[2025-09-29 10:21:59,037][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33398466500609897), 'mae': 0.229893758893013, 'accuracy': np.float64(0.8471297268529839), 'precision': np.float64(0.6040121580547112), 'recall': np.float64(0.4026258205689278), 'f1': np.float64(0.48317447967321536)}
+[2025-09-29 10:22:03,327][__main__][INFO] - Epoch 14/100: Train Loss: 0.3524, Val Loss: 0.3594
+[2025-09-29 10:22:03,327][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32947660408185286), 'mae': 0.21787714958190918, 'accuracy': np.float64(0.851421936393016), 'precision': np.float64(0.6697754895340986), 'recall': np.float64(0.3214249549385341), 'f1': np.float64(0.4343875302779412)}
+[2025-09-29 10:22:03,327][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.332973333011272), 'mae': 0.23068372905254364, 'accuracy': np.float64(0.8477913783927621), 'precision': np.float64(0.6205902539464654), 'recall': np.float64(0.3663992219790907), 'f1': np.float64(0.460762331838565)}
+[2025-09-29 10:22:07,704][__main__][INFO] - Epoch 15/100: Train Loss: 0.3528, Val Loss: 0.3576
+[2025-09-29 10:22:07,704][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32982342390410907), 'mae': 0.21840237081050873, 'accuracy': np.float64(0.8512134360497093), 'precision': np.float64(0.6695678016472786), 'recall': np.float64(0.3193997205176499), 'f1': np.float64(0.43249098462930713)}
+[2025-09-29 10:22:07,704][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3323451970171577), 'mae': 0.2126132994890213, 'accuracy': np.float64(0.8486256346820477), 'precision': np.float64(0.632), 'recall': np.float64(0.35213550530837184), 'f1': np.float64(0.45227438326220465)}
+[2025-09-29 10:22:12,081][__main__][INFO] - Epoch 16/100: Train Loss: 0.3526, Val Loss: 0.3574
+[2025-09-29 10:22:12,081][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32966712328236675), 'mae': 0.2182336449623108, 'accuracy': np.float64(0.8513895828914684), 'precision': np.float64(0.6693354683746997), 'recall': np.float64(0.3216882354132491), 'f1': np.float64(0.43453520818515073)}
+[2025-09-29 10:22:12,081][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3322153254362878), 'mae': 0.22547408938407898, 'accuracy': np.float64(0.8485249485781684), 'precision': np.float64(0.6394631286639926), 'recall': np.float64(0.33592673636437315), 'f1': np.float64(0.4404654375431699)}
+[2025-09-29 10:22:17,077][__main__][INFO] - Epoch 17/100: Train Loss: 0.3531, Val Loss: 0.3580
+[2025-09-29 10:22:17,077][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3297334033413247), 'mae': 0.21845483779907227, 'accuracy': np.float64(0.8515441607321957), 'precision': np.float64(0.6623272259723562), 'recall': np.float64(0.33383964193855437), 'f1': np.float64(0.4439237864404497)}
+[2025-09-29 10:22:17,077][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3322874315085622), 'mae': 0.2109457552433014, 'accuracy': np.float64(0.8483091926412841), 'precision': np.float64(0.6506975962346613), 'recall': np.float64(0.31372072291109493), 'f1': np.float64(0.4233377077865267)}
+[2025-09-29 10:22:21,879][__main__][INFO] - Epoch 18/100: Train Loss: 0.3531, Val Loss: 0.3554
+[2025-09-29 10:22:21,879][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3298777361355571), 'mae': 0.218758225440979, 'accuracy': np.float64(0.8507497025275275), 'precision': np.float64(0.6715714098589705), 'recall': np.float64(0.3115013062762015), 'f1': np.float64(0.42559490868843386)}
+[2025-09-29 10:22:21,879][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3313124899131084), 'mae': 0.2187248170375824, 'accuracy': np.float64(0.8486831695985502), 'precision': np.float64(0.6574891774891775), 'recall': np.float64(0.3077234784018154), 'f1': np.float64(0.4192337418571271)}
+[2025-09-29 10:22:26,778][__main__][INFO] - Epoch 19/100: Train Loss: 0.3524, Val Loss: 0.3605
+[2025-09-29 10:22:26,778][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32950953882792056), 'mae': 0.2182607352733612, 'accuracy': np.float64(0.8515837039007539), 'precision': np.float64(0.6774887026718729), 'recall': np.float64(0.31273669927294084), 'f1': np.float64(0.4279340446168768)}
+[2025-09-29 10:22:26,778][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33352915654418536), 'mae': 0.23239722847938538, 'accuracy': np.float64(0.8475180875393754), 'precision': np.float64(0.6301677651288197), 'recall': np.float64(0.3409514547370127), 'f1': np.float64(0.4424927688666842)}
+[2025-09-29 10:22:31,441][__main__][INFO] - Epoch 20/100: Train Loss: 0.3534, Val Loss: 0.3548
+[2025-09-29 10:22:31,441][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.329997374459139), 'mae': 0.21893158555030823, 'accuracy': np.float64(0.8512745482192993), 'precision': np.float64(0.6783247939407441), 'recall': np.float64(0.3083419405796221), 'f1': np.float64(0.42396480187129293)}
+[2025-09-29 10:22:31,441][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3310205785233501), 'mae': 0.22528761625289917, 'accuracy': np.float64(0.8479639831422695), 'precision': np.float64(0.6440788402019872), 'recall': np.float64(0.32044736202285434), 'f1': np.float64(0.42796839484792726)}
+[2025-09-29 10:22:31,711][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:22:35,947][__main__][INFO] - Epoch 21/100: Train Loss: 0.3522, Val Loss: 0.3576
+[2025-09-29 10:22:35,947][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32936184379100814), 'mae': 0.21799278259277344, 'accuracy': np.float64(0.8512529792182675), 'precision': np.float64(0.6744906417695563), 'recall': np.float64(0.3131012414687), 'f1': np.float64(0.4276743478381145)}
+[2025-09-29 10:22:35,947][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33260408242393136), 'mae': 0.22532905638217926, 'accuracy': np.float64(0.8465975288753362), 'precision': np.float64(0.6255248950209958), 'recall': np.float64(0.338033876327093), 'f1': np.float64(0.43889093491871417)}
+[2025-09-29 10:22:40,699][__main__][INFO] - Epoch 22/100: Train Loss: 0.3505, Val Loss: 0.3554
+[2025-09-29 10:22:40,699][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32880312238400455), 'mae': 0.2172325700521469, 'accuracy': np.float64(0.8516016780682802), 'precision': np.float64(0.675984696982871), 'recall': np.float64(0.31490370010328694), 'f1': np.float64(0.4296550104312024)}
+[2025-09-29 10:22:40,699][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3310762246477164), 'mae': 0.22402805089950562, 'accuracy': np.float64(0.8484817973907915), 'precision': np.float64(0.6359391474619671), 'recall': np.float64(0.3421671124078126), 'f1': np.float64(0.4449362419643798)}
+[2025-09-29 10:22:45,543][__main__][INFO] - Epoch 23/100: Train Loss: 0.3514, Val Loss: 0.3600
+[2025-09-29 10:22:45,543][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3292022121025159), 'mae': 0.2178775817155838, 'accuracy': np.float64(0.8513572293899208), 'precision': np.float64(0.6737963283685486), 'recall': np.float64(0.3151669805780019), 'f1': np.float64(0.42945648724352514)}
+[2025-09-29 10:22:45,543][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33353409334234413), 'mae': 0.22718264162540436, 'accuracy': np.float64(0.8469283546452253), 'precision': np.float64(0.6506302148056098), 'recall': np.float64(0.29702569089877623), 'f1': np.float64(0.4078566659247718)}
+[2025-09-29 10:22:50,307][__main__][INFO] - Epoch 24/100: Train Loss: 0.3503, Val Loss: 0.3631
+[2025-09-29 10:22:50,307][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32884548196732544), 'mae': 0.21731173992156982, 'accuracy': np.float64(0.8515261865646693), 'precision': np.float64(0.6759796016214096), 'recall': np.float64(0.3140936063349333), 'f1': np.float64(0.4288993362831859)}
+[2025-09-29 10:22:50,307][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33502728219462985), 'mae': 0.23730644583702087, 'accuracy': np.float64(0.8480646692461488), 'precision': np.float64(0.6279907754396079), 'recall': np.float64(0.35310803144501174), 'f1': np.float64(0.4520412927322716)}
+[2025-09-29 10:22:55,199][__main__][INFO] - Epoch 25/100: Train Loss: 0.3507, Val Loss: 0.3573
+[2025-09-29 10:22:55,200][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32894293700546073), 'mae': 0.21773280203342438, 'accuracy': np.float64(0.8523889466059379), 'precision': np.float64(0.6782880912560573), 'recall': np.float64(0.32033132835125666), 'f1': np.float64(0.4351546164850886)}
+[2025-09-29 10:22:55,200][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33252158143339955), 'mae': 0.21038636565208435, 'accuracy': np.float64(0.8476763085597572), 'precision': np.float64(0.6645962732919255), 'recall': np.float64(0.2861658157062971), 'f1': np.float64(0.4000679809653297)}
+[2025-09-29 10:23:00,064][__main__][INFO] - Epoch 26/100: Train Loss: 0.3489, Val Loss: 0.3584
+[2025-09-29 10:23:00,064][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32808712331959733), 'mae': 0.21613875031471252, 'accuracy': np.float64(0.8521373082605679), 'precision': np.float64(0.6760473160524405), 'recall': np.float64(0.32061486117018045), 'f1': np.float64(0.434953430227766)}
+[2025-09-29 10:23:00,064][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.332827824253222), 'mae': 0.22693687677383423, 'accuracy': np.float64(0.8477769946636365), 'precision': np.float64(0.6479609032692956), 'recall': np.float64(0.31161358294837505), 'f1': np.float64(0.4208394899578613)}
+[2025-09-29 10:23:04,748][__main__][INFO] - Epoch 27/100: Train Loss: 0.3496, Val Loss: 0.3538
+[2025-09-29 10:23:04,750][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3286112633653103), 'mae': 0.2169710248708725, 'accuracy': np.float64(0.8519216182502507), 'precision': np.float64(0.6736096381453358), 'recall': np.float64(0.32158697369220485), 'f1': np.float64(0.43533927347498286)}
+[2025-09-29 10:23:04,750][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3307674253166883), 'mae': 0.22156615555286407, 'accuracy': np.float64(0.848539332307294), 'precision': np.float64(0.6364047654954004), 'recall': np.float64(0.34200502471837263), 'f1': np.float64(0.4449130205587771)}
+[2025-09-29 10:23:05,017][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:23:09,678][__main__][INFO] - Epoch 28/100: Train Loss: 0.3494, Val Loss: 0.3567
+[2025-09-29 10:23:09,678][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3283404256184581), 'mae': 0.21652570366859436, 'accuracy': np.float64(0.8518461267466397), 'precision': np.float64(0.6774011299435029), 'recall': np.float64(0.31567328918322296), 'f1': np.float64(0.4306574384903367)}
+[2025-09-29 10:23:09,678][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3325863181555107), 'mae': 0.22123220562934875, 'accuracy': np.float64(0.8466982149792155), 'precision': np.float64(0.6396875519361809), 'recall': np.float64(0.31193775832725507), 'f1': np.float64(0.4193724122902593)}
+[2025-09-29 10:23:14,423][__main__][INFO] - Epoch 29/100: Train Loss: 0.3487, Val Loss: 0.3549
+[2025-09-29 10:23:14,423][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32800086261763767), 'mae': 0.21632994711399078, 'accuracy': np.float64(0.8524788174435701), 'precision': np.float64(0.6732159175874387), 'recall': np.float64(0.3282297425927051), 'f1': np.float64(0.4413010033900151)}
+[2025-09-29 10:23:14,423][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3312998738620252), 'mae': 0.21880385279655457, 'accuracy': np.float64(0.8478632970383901), 'precision': np.float64(0.6595436436073886), 'recall': np.float64(0.2951616824702164), 'f1': np.float64(0.40781591176305915)}
+[2025-09-29 10:23:19,062][__main__][INFO] - Epoch 30/100: Train Loss: 0.3479, Val Loss: 0.3566
+[2025-09-29 10:23:19,064][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3278362502303017), 'mae': 0.21604037284851074, 'accuracy': np.float64(0.852439274275012), 'precision': np.float64(0.6759623103899945), 'recall': np.float64(0.3239970026530571), 'f1': np.float64(0.43803734735228084)}
+[2025-09-29 10:23:19,064][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3322674752441095), 'mae': 0.21814508736133575, 'accuracy': np.float64(0.8468276685413461), 'precision': np.float64(0.6862874779541446), 'recall': np.float64(0.25228948861333983), 'f1': np.float64(0.3689481481481482)}
+[2025-09-29 10:23:23,248][__main__][INFO] - Epoch 31/100: Train Loss: 0.3484, Val Loss: 0.3596
+[2025-09-29 10:23:23,248][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3280540684826375), 'mae': 0.21621043980121613, 'accuracy': np.float64(0.8520977650920097), 'precision': np.float64(0.6767104472486909), 'recall': np.float64(0.31929845879660573), 'f1': np.float64(0.4338768489852082)}
+[2025-09-29 10:23:23,248][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.332319246939282), 'mae': 0.2017887532711029, 'accuracy': np.float64(0.8488270068898063), 'precision': np.float64(0.6265043574491631), 'recall': np.float64(0.3670475727368506), 'f1': np.float64(0.46289860997547017)}
+[2025-09-29 10:23:27,566][__main__][INFO] - Epoch 32/100: Train Loss: 0.3467, Val Loss: 0.3568
+[2025-09-29 10:23:27,566][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3272624258475571), 'mae': 0.2152138352394104, 'accuracy': np.float64(0.8530432063039001), 'precision': np.float64(0.6719831599400883), 'recall': np.float64(0.33618891386678007), 'f1': np.float64(0.44816414686825057)}
+[2025-09-29 10:23:27,566][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33207697833947414), 'mae': 0.21618624031543732, 'accuracy': np.float64(0.8474174014354962), 'precision': np.float64(0.6510207642645263), 'recall': np.float64(0.3023745846502958), 'f1': np.float64(0.41294964028776976)}
+[2025-09-29 10:23:32,186][__main__][INFO] - Epoch 33/100: Train Loss: 0.3465, Val Loss: 0.3537
+[2025-09-29 10:23:32,186][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32754672274108093), 'mae': 0.21561461687088013, 'accuracy': np.float64(0.8532373273131855), 'precision': np.float64(0.6794242309790591), 'recall': np.float64(0.32788545274115477), 'f1': np.float64(0.44231347157336826)}
+[2025-09-29 10:23:32,186][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3310290976567547), 'mae': 0.21962429583072662, 'accuracy': np.float64(0.8489133092645599), 'precision': np.float64(0.6587095658190625), 'recall': np.float64(0.3086149606937353), 'f1': np.float64(0.4203090507726269)}
+[2025-09-29 10:23:32,473][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:23:36,444][__main__][INFO] - Epoch 34/100: Train Loss: 0.3467, Val Loss: 0.3535
+[2025-09-29 10:23:36,444][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.327574699887966), 'mae': 0.21571707725524902, 'accuracy': np.float64(0.8525543089471811), 'precision': np.float64(0.680093051307457), 'recall': np.float64(0.31972375802499137), 'f1': np.float64(0.4349634935941589)}
+[2025-09-29 10:23:36,444][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3306417787797738), 'mae': 0.2245047390460968, 'accuracy': np.float64(0.8489708441810624), 'precision': np.float64(0.6424918642491865), 'recall': np.float64(0.3360077802090931), 'f1': np.float64(0.44125159642401024)}
+[2025-09-29 10:23:36,728][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:23:40,714][__main__][INFO] - Epoch 35/100: Train Loss: 0.3462, Val Loss: 0.3528
+[2025-09-29 10:23:40,716][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3271104249648104), 'mae': 0.21530409157276154, 'accuracy': np.float64(0.8522703171002635), 'precision': np.float64(0.6774207369323051), 'recall': np.float64(0.3202098142860036), 'f1': np.float64(0.43486392452933975)}
+[2025-09-29 10:23:40,716][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3298701471909198), 'mae': 0.2201942801475525, 'accuracy': np.float64(0.8488989255354343), 'precision': np.float64(0.6554764326890471), 'recall': np.float64(0.31331550368749495), 'f1': np.float64(0.4239732412129188)}
+[2025-09-29 10:23:40,999][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:23:45,211][__main__][INFO] - Epoch 36/100: Train Loss: 0.3463, Val Loss: 0.3537
+[2025-09-29 10:23:45,211][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3274324806696606), 'mae': 0.21570715308189392, 'accuracy': np.float64(0.8519575665853036), 'precision': np.float64(0.6856172140430351), 'recall': np.float64(0.3065192296008263), 'f1': np.float64(0.4236410457369983)}
+[2025-09-29 10:23:45,213][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.33097401764187456), 'mae': 0.2282603532075882, 'accuracy': np.float64(0.8490571465558161), 'precision': np.float64(0.6529090004972651), 'recall': np.float64(0.31923170435205445), 'f1': np.float64(0.4288047028086218)}
+[2025-09-29 10:23:49,772][__main__][INFO] - Epoch 37/100: Train Loss: 0.3453, Val Loss: 0.3538
+[2025-09-29 10:23:49,772][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3269579546354073), 'mae': 0.2152097374200821, 'accuracy': np.float64(0.8522739119337688), 'precision': np.float64(0.6913198133690581), 'recall': np.float64(0.3030763310853231), 'f1': np.float64(0.4214068483892769)}
+[2025-09-29 10:23:49,772][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3303702489451388), 'mae': 0.22411203384399414, 'accuracy': np.float64(0.8482372739956561), 'precision': np.float64(0.6524036822366178), 'recall': np.float64(0.3101547937434152), 'f1': np.float64(0.42043394671793466)}
+[2025-09-29 10:23:54,286][__main__][INFO] - Epoch 38/100: Train Loss: 0.3448, Val Loss: 0.3527
+[2025-09-29 10:23:54,286][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3268952258035944), 'mae': 0.2151561826467514, 'accuracy': np.float64(0.8525291451126441), 'precision': np.float64(0.6874270842681504), 'recall': np.float64(0.3102659132794621), 'f1': np.float64(0.4275567587178879)}
+[2025-09-29 10:23:54,286][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3297743330408772), 'mae': 0.20863641798496246, 'accuracy': np.float64(0.8482516577247817), 'precision': np.float64(0.680816656559531), 'recall': np.float64(0.2729556690169382), 'f1': np.float64(0.3896795094295962)}
+[2025-09-29 10:23:54,578][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:23:58,744][__main__][INFO] - Epoch 39/100: Train Loss: 0.3442, Val Loss: 0.3525
+[2025-09-29 10:23:58,744][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3265912677559965), 'mae': 0.21449847519397736, 'accuracy': np.float64(0.852378162105422), 'precision': np.float64(0.6814847161572053), 'recall': np.float64(0.31605808372319094), 'f1': np.float64(0.4318386208614082)}
+[2025-09-29 10:23:58,744][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3300218590627596), 'mae': 0.2094581127166748, 'accuracy': np.float64(0.847014657019979), 'precision': np.float64(0.6742377736852875), 'recall': np.float64(0.26703946835237863), 'f1': np.float64(0.3825612446302102)}
+[2025-09-29 10:23:59,028][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:24:03,416][__main__][INFO] - Epoch 40/100: Train Loss: 0.3428, Val Loss: 0.3491
+[2025-09-29 10:24:03,416][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3260974456475335), 'mae': 0.21395191550254822, 'accuracy': np.float64(0.8529245767982256), 'precision': np.float64(0.6882394804732676), 'recall': np.float64(0.31336452194341496), 'f1': np.float64(0.4306489096703266)}
+[2025-09-29 10:24:03,416][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3287057732251785), 'mae': 0.21492286026477814, 'accuracy': np.float64(0.8496468794499662), 'precision': np.float64(0.6502070723160243), 'recall': np.float64(0.33082097414701356), 'f1': np.float64(0.438523929741634)}
+[2025-09-29 10:24:03,705][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:24:07,652][__main__][INFO] - Epoch 41/100: Train Loss: 0.3423, Val Loss: 0.3507
+[2025-09-29 10:24:07,652][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.325946981597538), 'mae': 0.2136344611644745, 'accuracy': np.float64(0.8526765332863608), 'precision': np.float64(0.6830651140477125), 'recall': np.float64(0.3171922149988861), 'f1': np.float64(0.4332143943794429)}
+[2025-09-29 10:24:07,652][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3288622702147013), 'mae': 0.2086619883775711, 'accuracy': np.float64(0.8479208319548927), 'precision': np.float64(0.6646773591943305), 'recall': np.float64(0.2888402625820569), 'f1': np.float64(0.4026891136094006)}
+[2025-09-29 10:24:12,264][__main__][INFO] - Epoch 42/100: Train Loss: 0.3409, Val Loss: 0.3501
+[2025-09-29 10:24:12,264][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3253221006928066), 'mae': 0.21258538961410522, 'accuracy': np.float64(0.8530863443059634), 'precision': np.float64(0.6752048758390644), 'recall': np.float64(0.3320574356481763), 'f1': np.float64(0.4451805593266359)}
+[2025-09-29 10:24:12,264][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32917719122000244), 'mae': 0.21864116191864014, 'accuracy': np.float64(0.8489708441810624), 'precision': np.float64(0.629854540319164), 'recall': np.float64(0.3614555474511711), 'f1': np.float64(0.4593202883625129)}
+[2025-09-29 10:24:16,421][__main__][INFO] - Epoch 43/100: Train Loss: 0.3399, Val Loss: 0.3493
+[2025-09-29 10:24:16,421][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32499969601616946), 'mae': 0.2121797651052475, 'accuracy': np.float64(0.8535716468291771), 'precision': np.float64(0.6735046166198314), 'recall': np.float64(0.33977357879174513), 'f1': np.float64(0.451680643988854)}
+[2025-09-29 10:24:16,421][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32870150057868225), 'mae': 0.2141972929239273, 'accuracy': np.float64(0.8496756469082174), 'precision': np.float64(0.6245711269464238), 'recall': np.float64(0.3835805170597293), 'f1': np.float64(0.475272380378571)}
+[2025-09-29 10:24:21,091][__main__][INFO] - Epoch 44/100: Train Loss: 0.3401, Val Loss: 0.3512
+[2025-09-29 10:24:21,091][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32496748495676486), 'mae': 0.21204504370689392, 'accuracy': np.float64(0.8537118453358833), 'precision': np.float64(0.6716075734218744), 'recall': np.float64(0.3441075804524374), 'f1': np.float64(0.45505918902994275)}
+[2025-09-29 10:24:21,091][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32971108926205955), 'mae': 0.22327108681201935, 'accuracy': np.float64(0.8491146814723185), 'precision': np.float64(0.6172776861600914), 'recall': np.float64(0.39435934840748843), 'f1': np.float64(0.48125803580259124)}
+[2025-09-29 10:24:25,368][__main__][INFO] - Epoch 45/100: Train Loss: 0.3385, Val Loss: 0.3516
+[2025-09-29 10:24:25,369][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32430615453417455), 'mae': 0.21123231947422028, 'accuracy': np.float64(0.8546357175467418), 'precision': np.float64(0.6734440478038181), 'recall': np.float64(0.3514996860886648), 'f1': np.float64(0.46190900743855545)}
+[2025-09-29 10:24:25,369][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3287480207028292), 'mae': 0.20783455669879913, 'accuracy': np.float64(0.8499777052198553), 'precision': np.float64(0.6377543657093375), 'recall': np.float64(0.35813274981765136), 'f1': np.float64(0.45868798007058337)}
+[2025-09-29 10:24:29,551][__main__][INFO] - Epoch 46/100: Train Loss: 0.3391, Val Loss: 0.3479
+[2025-09-29 10:24:29,553][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32460176296008053), 'mae': 0.21168972551822662, 'accuracy': np.float64(0.8544020533688982), 'precision': np.float64(0.6731572169976977), 'recall': np.float64(0.34937318994673633), 'f1': np.float64(0.46000213321956157)}
+[2025-09-29 10:24:29,553][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3276708275313159), 'mae': 0.21248739957809448, 'accuracy': np.float64(0.851214705924658), 'precision': np.float64(0.6370004120313144), 'recall': np.float64(0.3758813518113299), 'f1': np.float64(0.472782874617737)}
+[2025-09-29 10:24:29,847][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:24:34,199][__main__][INFO] - Epoch 47/100: Train Loss: 0.3380, Val Loss: 0.3511
+[2025-09-29 10:24:34,199][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32403091366853715), 'mae': 0.21097007393836975, 'accuracy': np.float64(0.8550994510689237), 'precision': np.float64(0.6697996629844598), 'recall': np.float64(0.36225368086355997), 'f1': np.float64(0.470203201808575)}
+[2025-09-29 10:24:34,199][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32891438535292683), 'mae': 0.2114877551794052, 'accuracy': np.float64(0.8499777052198553), 'precision': np.float64(0.6462835249042146), 'recall': np.float64(0.3417618931842127), 'f1': np.float64(0.44709499575911793)}
+[2025-09-29 10:24:38,407][__main__][INFO] - Epoch 48/100: Train Loss: 0.3370, Val Loss: 0.3490
+[2025-09-29 10:24:38,407][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3236030339300384), 'mae': 0.2104267179965973, 'accuracy': np.float64(0.8546752607153), 'precision': np.float64(0.6685877876972915), 'recall': np.float64(0.35945885736273975), 'f1': np.float64(0.4675464938622833)}
+[2025-09-29 10:24:38,407][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32873038802736054), 'mae': 0.21684883534908295, 'accuracy': np.float64(0.8496037282625893), 'precision': np.float64(0.6155356485458339), 'recall': np.float64(0.40651592511548745), 'f1': np.float64(0.48965247950019525)}
+[2025-09-29 10:24:42,916][__main__][INFO] - Epoch 49/100: Train Loss: 0.3362, Val Loss: 0.3487
+[2025-09-29 10:24:42,916][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3234720248532998), 'mae': 0.2102496474981308, 'accuracy': np.float64(0.8549376835611858), 'precision': np.float64(0.6666297363173056), 'recall': np.float64(0.36557506531381007), 'f1': np.float64(0.4721993329409457)}
+[2025-09-29 10:24:42,916][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3280337070439572), 'mae': 0.21228376030921936, 'accuracy': np.float64(0.8507112754052616), 'precision': np.float64(0.638731596828992), 'recall': np.float64(0.36566982737661075), 'f1': np.float64(0.4650827191671391)}
+[2025-09-29 10:24:47,078][__main__][INFO] - Epoch 50/100: Train Loss: 0.3356, Val Loss: 0.3473
+[2025-09-29 10:24:47,078][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3233371145766329), 'mae': 0.21004796028137207, 'accuracy': np.float64(0.8544775448725093), 'precision': np.float64(0.6677604284528929), 'recall': np.float64(0.35856775421755066), 'f1': np.float64(0.46659024126708043)}
+[2025-09-29 10:24:47,078][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32778910065188005), 'mae': 0.21039855480194092, 'accuracy': np.float64(0.8509845662586483), 'precision': np.float64(0.6574884609263091), 'recall': np.float64(0.3347921225382932), 'f1': np.float64(0.4436687788637096)}
+[2025-09-29 10:24:47,374][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:24:51,712][__main__][INFO] - Epoch 51/100: Train Loss: 0.3344, Val Loss: 0.3483
+[2025-09-29 10:24:51,712][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3229640905360646), 'mae': 0.20946474373340607, 'accuracy': np.float64(0.8553870377493467), 'precision': np.float64(0.6704422668504788), 'recall': np.float64(0.36442068169390607), 'f1': np.float64(0.4721843182533852)}
+[2025-09-29 10:24:51,712][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3278454088942319), 'mae': 0.22412793338298798, 'accuracy': np.float64(0.8503660659062469), 'precision': np.float64(0.6246458923512748), 'recall': np.float64(0.39314369073668853), 'f1': np.float64(0.48256652573986564)}
+[2025-09-29 10:24:55,929][__main__][INFO] - Epoch 52/100: Train Loss: 0.3342, Val Loss: 0.3490
+[2025-09-29 10:24:55,929][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32287501892063203), 'mae': 0.20957057178020477, 'accuracy': np.float64(0.8551425890709872), 'precision': np.float64(0.6681604385022777), 'recall': np.float64(0.36537254187172163), 'f1': np.float64(0.4724135222184398)}
+[2025-09-29 10:24:55,929][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32789715167574196), 'mae': 0.21010814607143402, 'accuracy': np.float64(0.8501503099693627), 'precision': np.float64(0.631773905885581), 'recall': np.float64(0.3732069049355701), 'f1': np.float64(0.469227633992256)}
+[2025-09-29 10:25:01,209][__main__][INFO] - Epoch 53/100: Train Loss: 0.3333, Val Loss: 0.3465
+[2025-09-29 10:25:01,209][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32243660523670714), 'mae': 0.2087671011686325, 'accuracy': np.float64(0.8552216754081035), 'precision': np.float64(0.6688930943634273), 'recall': np.float64(0.365068756708589), 'f1': np.float64(0.4723423210963499)}
+[2025-09-29 10:25:01,209][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32716305828161263), 'mae': 0.2216877043247223, 'accuracy': np.float64(0.85196265983919), 'precision': np.float64(0.64615164929316), 'recall': np.float64(0.36672339735797066), 'f1': np.float64(0.4678937028228725)}
+[2025-09-29 10:25:01,512][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:25:07,664][__main__][INFO] - Epoch 54/100: Train Loss: 0.3320, Val Loss: 0.3468
+[2025-09-29 10:25:07,664][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3220034255140255), 'mae': 0.20842508971691132, 'accuracy': np.float64(0.8554553395859471), 'precision': np.float64(0.6697526292401126), 'recall': np.float64(0.36628389736111955), 'f1': np.float64(0.4735732708396067)}
+[2025-09-29 10:25:07,664][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32749287706739016), 'mae': 0.21400508284568787, 'accuracy': np.float64(0.8502941472606188), 'precision': np.float64(0.6453409604094535), 'recall': np.float64(0.3474349623146122), 'f1': np.float64(0.4516910757559793)}
+[2025-09-29 10:25:13,967][__main__][INFO] - Epoch 55/100: Train Loss: 0.3306, Val Loss: 0.3482
+[2025-09-29 10:25:13,967][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3214460760319128), 'mae': 0.20752348005771637, 'accuracy': np.float64(0.8562138494555624), 'precision': np.float64(0.6683902474056519), 'recall': np.float64(0.3769771351033882), 'f1': np.float64(0.48206562556651905)}
+[2025-09-29 10:25:13,967][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3275456877682688), 'mae': 0.21382445096969604, 'accuracy': np.float64(0.8505674381140055), 'precision': np.float64(0.6132667286245354), 'recall': np.float64(0.4278304562768458), 'f1': np.float64(0.5040339905475725)}
+[2025-09-29 10:25:20,411][__main__][INFO] - Epoch 56/100: Train Loss: 0.3312, Val Loss: 0.3475
+[2025-09-29 10:25:20,412][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32181295333892607), 'mae': 0.20801019668579102, 'accuracy': np.float64(0.8553942274163572), 'precision': np.float64(0.6654612519437313), 'recall': np.float64(0.37268363813111366), 'f1': np.float64(0.477787874853953)}
+[2025-09-29 10:25:20,412][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32709967406369483), 'mae': 0.21880894899368286, 'accuracy': np.float64(0.8519770435683155), 'precision': np.float64(0.6301805237732011), 'recall': np.float64(0.4017343382770079), 'f1': np.float64(0.4906706260826528)}
+[2025-09-29 10:25:27,158][__main__][INFO] - Epoch 57/100: Train Loss: 0.3305, Val Loss: 0.3476
+[2025-09-29 10:25:27,159][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3213820511308882), 'mae': 0.20772041380405426, 'accuracy': np.float64(0.8560628664483404), 'precision': np.float64(0.6671560027211859), 'recall': np.float64(0.37736192964335624), 'f1': np.float64(0.4820583137143301)}
+[2025-09-29 10:25:27,159][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3270648223150096), 'mae': 0.2146289050579071, 'accuracy': np.float64(0.8504092170936237), 'precision': np.float64(0.6354239418913256), 'recall': np.float64(0.3686684496312505), 'f1': np.float64(0.4666119602010462)}
+[2025-09-29 10:25:33,851][__main__][INFO] - Epoch 58/100: Train Loss: 0.3294, Val Loss: 0.3450
+[2025-09-29 10:25:33,853][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32097261143908434), 'mae': 0.20716492831707, 'accuracy': np.float64(0.8563648324627845), 'precision': np.float64(0.6690471918176925), 'recall': np.float64(0.3775644530854446), 'f1': np.float64(0.48271665674115116)}
+[2025-09-29 10:25:33,853][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32654867279858923), 'mae': 0.21523135900497437, 'accuracy': np.float64(0.8517469039023057), 'precision': np.float64(0.6491047842676841), 'recall': np.float64(0.35845692519653133), 'f1': np.float64(0.46185976087297026)}
+[2025-09-29 10:25:34,159][__main__][INFO] - New best model saved: best_model_hybrid.pth
+[2025-09-29 10:25:38,307][__main__][INFO] - Epoch 59/100: Train Loss: 0.3289, Val Loss: 0.3472
+[2025-09-29 10:25:38,307][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.32084028444975715), 'mae': 0.20701566338539124, 'accuracy': np.float64(0.8562497977906153), 'precision': np.float64(0.6666548333274167), 'recall': np.float64(0.3803187718978472), 'f1': np.float64(0.48433188043225955)}
+[2025-09-29 10:25:38,307][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3271061087026848), 'mae': 0.21541909873485565, 'accuracy': np.float64(0.8498338679285992), 'precision': np.float64(0.6091755777854433), 'recall': np.float64(0.42937028932652566), 'f1': np.float64(0.5037079292641187)}
+[2025-09-29 10:25:42,766][__main__][INFO] - Epoch 60/100: Train Loss: 0.3270, Val Loss: 0.3464
+[2025-09-29 10:25:42,766][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3201980851683824), 'mae': 0.20617523789405823, 'accuracy': np.float64(0.8566200656416598), 'precision': np.float64(0.6677150328645134), 'recall': np.float64(0.3826680438260729), 'f1': np.float64(0.4865143224975861)}
+[2025-09-29 10:25:42,766][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3270683418268317), 'mae': 0.21721327304840088, 'accuracy': np.float64(0.8501790774276139), 'precision': np.float64(0.6173276388041489), 'recall': np.float64(0.4100008104384472), 'f1': np.float64(0.4927437420862959)}
+[2025-09-29 10:25:47,748][__main__][INFO] - Epoch 61/100: Train Loss: 0.3259, Val Loss: 0.3479
+[2025-09-29 10:25:47,749][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31988291893325027), 'mae': 0.20578932762145996, 'accuracy': np.float64(0.8568429453189875), 'precision': np.float64(0.6699274331246443), 'recall': np.float64(0.38141239848512465), 'f1': np.float64(0.4860818954948444)}
+[2025-09-29 10:25:47,749][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32657216117110954), 'mae': 0.21111157536506653, 'accuracy': np.float64(0.8505530543848798), 'precision': np.float64(0.6209207097654796), 'recall': np.float64(0.40554339897884756), 'f1': np.float64(0.4906363368957742)}
+[2025-09-29 10:25:51,981][__main__][INFO] - Epoch 62/100: Train Loss: 0.3260, Val Loss: 0.3458
+[2025-09-29 10:25:51,982][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3199843377139818), 'mae': 0.2059944123029709, 'accuracy': np.float64(0.856911247155588), 'precision': np.float64(0.6686515626651633), 'recall': np.float64(0.38432873605119794), 'f1': np.float64(0.4881041179042671)}
+[2025-09-29 10:25:51,982][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32593471791075784), 'mae': 0.21236830949783325, 'accuracy': np.float64(0.8516030666110496), 'precision': np.float64(0.658018130665833), 'recall': np.float64(0.3411945862711727), 'f1': np.float64(0.44937823557666645)}
+[2025-09-29 10:25:56,901][__main__][INFO] - Epoch 63/100: Train Loss: 0.3240, Val Loss: 0.3460
+[2025-09-29 10:25:56,901][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31937611178449105), 'mae': 0.20526090264320374, 'accuracy': np.float64(0.8572060235030214), 'precision': np.float64(0.6722200420962505), 'recall': np.float64(0.3816149219272131), 'f1': np.float64(0.4868489045059942)}
+[2025-09-29 10:25:56,901][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3259131953393438), 'mae': 0.21285441517829895, 'accuracy': np.float64(0.8518763574644362), 'precision': np.float64(0.6497432134996332), 'recall': np.float64(0.3588621444201313), 'f1': np.float64(0.4623577320664091)}
+[2025-09-29 10:26:01,618][__main__][INFO] - Epoch 64/100: Train Loss: 0.3221, Val Loss: 0.3460
+[2025-09-29 10:26:01,618][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31851055791518856), 'mae': 0.2041328400373459, 'accuracy': np.float64(0.8577560330293302), 'precision': np.float64(0.6710260166004045), 'recall': np.float64(0.38967535492233224), 'f1': np.float64(0.49303660427156604)}
+[2025-09-29 10:26:01,618][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32583982732322675), 'mae': 0.21008482575416565, 'accuracy': np.float64(0.8519195086518131), 'precision': np.float64(0.6269880715705766), 'recall': np.float64(0.4089472404570873), 'f1': np.float64(0.49502133712660024)}
+[2025-09-29 10:26:06,634][__main__][INFO] - Epoch 65/100: Train Loss: 0.3211, Val Loss: 0.3472
+[2025-09-29 10:26:06,634][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31813523529015253), 'mae': 0.20349976420402527, 'accuracy': np.float64(0.8580723783777955), 'precision': np.float64(0.6722841225626741), 'recall': np.float64(0.39103226198432467), 'f1': np.float64(0.49446201518624266)}
+[2025-09-29 10:26:06,634][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32618956603539645), 'mae': 0.20868417620658875, 'accuracy': np.float64(0.8517037527149288), 'precision': np.float64(0.6357190635451505), 'recall': np.float64(0.3851203501094092), 'f1': np.float64(0.479660845866559)}
+[2025-09-29 10:26:11,242][__main__][INFO] - Epoch 66/100: Train Loss: 0.3193, Val Loss: 0.3468
+[2025-09-29 10:26:11,242][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31762601484296465), 'mae': 0.20297187566757202, 'accuracy': np.float64(0.857853093533973), 'precision': np.float64(0.6712758176308732), 'recall': np.float64(0.3903234299370152), 'f1': np.float64(0.4936225796537239)}
+[2025-09-29 10:26:11,244][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3262745244575515), 'mae': 0.21679575741291046, 'accuracy': np.float64(0.8515742991527984), 'precision': np.float64(0.6293213828425096), 'recall': np.float64(0.39833049679876814), 'f1': np.float64(0.4878654027495161)}
+[2025-09-29 10:26:15,625][__main__][INFO] - Epoch 67/100: Train Loss: 0.3177, Val Loss: 0.3473
+[2025-09-29 10:26:15,625][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3168815880528877), 'mae': 0.20210489630699158, 'accuracy': np.float64(0.8582664993870809), 'precision': np.float64(0.6732362977923254), 'recall': np.float64(0.3915588229337546), 'f1': np.float64(0.49514053396504265)}
+[2025-09-29 10:26:15,625][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3259020620229333), 'mae': 0.20701351761817932, 'accuracy': np.float64(0.8512290896537836), 'precision': np.float64(0.6256926952141058), 'recall': np.float64(0.4026258205689278), 'f1': np.float64(0.4899649884116573)}
+[2025-09-29 10:26:20,247][__main__][INFO] - Epoch 68/100: Train Loss: 0.3160, Val Loss: 0.3474
+[2025-09-29 10:26:20,247][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31650245051768644), 'mae': 0.2015298306941986, 'accuracy': np.float64(0.8581334905473853), 'precision': np.float64(0.6708018884179331), 'recall': np.float64(0.39423213236932175), 'f1': np.float64(0.4966069697433542)}
+[2025-09-29 10:26:20,247][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.32567419127198943), 'mae': 0.20881906151771545, 'accuracy': np.float64(0.8516174503401752), 'precision': np.float64(0.6350287011079963), 'recall': np.float64(0.38552556933300913), 'f1': np.float64(0.47977811396873427)}
+[2025-09-29 10:26:24,662][__main__][INFO] - Epoch 69/100: Train Loss: 0.3137, Val Loss: 0.3461
+[2025-09-29 10:26:24,662][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.3155565036438936), 'mae': 0.2004847228527069, 'accuracy': np.float64(0.8590861214262862), 'precision': np.float64(0.6731305708648023), 'recall': np.float64(0.4007128825161512), 'f1': np.float64(0.5023676226022268)}
+[2025-09-29 10:26:24,662][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3247340370363317), 'mae': 0.2082468420267105, 'accuracy': np.float64(0.8524517066294608), 'precision': np.float64(0.6379424632109241), 'recall': np.float64(0.3899829807926088), 'f1': np.float64(0.4840559299869229)}
+[2025-09-29 10:26:29,027][__main__][INFO] - Epoch 70/100: Train Loss: 0.3116, Val Loss: 0.3499
+[2025-09-29 10:26:29,028][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.31481959626570516), 'mae': 0.19952327013015747, 'accuracy': np.float64(0.8591148800943285), 'precision': np.float64(0.6738225255972696), 'recall': np.float64(0.399842031715171), 'f1': np.float64(0.5018747537399748)}
+[2025-09-29 10:26:29,028][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.3261198356368653), 'mae': 0.20849689841270447, 'accuracy': np.float64(0.8517181364440545), 'precision': np.float64(0.6259930486593843), 'recall': np.float64(0.4087041089229273), 'f1': np.float64(0.4945329737680804)}
+[2025-09-29 10:26:29,313][__main__][INFO] - Early stopping after 70 epochs
+[2025-09-29 10:26:29,313][__main__][INFO] - Training completed!
+[2025-09-29 10:26:29,313][__main__][INFO] - Best validation loss: 0.3450
+[2025-09-29 10:26:32,735][__main__][INFO] - MLflow run completed

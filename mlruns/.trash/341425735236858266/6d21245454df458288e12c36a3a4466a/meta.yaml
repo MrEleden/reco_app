@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/341425735236858266/6d21245454df458288e12c36a3a4466a/artifacts
+deleted_time: 1759137095135
+end_time: 1759130393024
+entry_point_name: ''
+experiment_id: '341425735236858266'
+lifecycle_stage: deleted
+run_id: 6d21245454df458288e12c36a3a4466a
+run_name: hybrid_hybrid_lr_sweep
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759130377996
+status: 3
+tags: []
+user_id: mavil

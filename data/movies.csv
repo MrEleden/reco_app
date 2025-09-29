@@ -1,0 +1,101 @@
+movieId,title,genres
+1,The Shawshank Redemption,Drama
+2,The Godfather,Crime|Drama
+3,The Dark Knight,Action|Crime|Drama
+4,Pulp Fiction,Crime|Drama
+5,Fight Club,Drama
+6,Forrest Gump,Comedy|Drama|Romance
+7,Inception,Action|Sci-Fi
+8,The Matrix,Action|Sci-Fi
+9,Goodfellas,Crime|Drama
+10,The Lord of the Rings,Adventure|Drama|Fantasy
+11,Star Wars,Action|Adventure|Fantasy
+12,Casablanca,Drama|Romance
+13,Schindler's List,Biography|Drama|History
+14,The Silence of the Lambs,Crime|Drama|Thriller
+15,Saving Private Ryan,Drama|War
+16,Terminator 2,Action|Sci-Fi
+17,Back to the Future,Adventure|Comedy|Sci-Fi
+18,Raiders of the Lost Ark,Action|Adventure
+19,Titanic,Drama|Romance
+20,Jurassic Park,Adventure|Sci-Fi
+21,Avatar,Action|Adventure|Sci-Fi
+22,The Avengers,Action|Adventure|Sci-Fi
+23,Iron Man,Action|Adventure|Sci-Fi
+24,Spider-Man,Action|Adventure
+25,Batman Begins,Action|Crime|Drama
+26,Wonder Woman,Action|Adventure
+27,Black Panther,Action|Adventure|Sci-Fi
+28,Captain Marvel,Action|Adventure|Sci-Fi
+29,Thor,Action|Adventure|Fantasy
+30,Guardians of the Galaxy,Action|Adventure|Comedy
+31,Deadpool,Action|Comedy
+32,X-Men,Action|Adventure|Sci-Fi
+33,Fantastic Four,Action|Adventure|Sci-Fi
+34,The Hulk,Action|Sci-Fi
+35,Superman,Action|Adventure|Sci-Fi
+36,Justice League,Action|Adventure|Sci-Fi
+37,Aquaman,Action|Adventure|Sci-Fi
+38,The Flash,Action|Adventure|Sci-Fi
+39,Green Lantern,Action|Adventure|Sci-Fi
+40,Cyborg,Action|Adventure|Sci-Fi
+41,Toy Story,Animation|Adventure|Comedy
+42,Finding Nemo,Animation|Adventure|Comedy
+43,Up,Animation|Adventure|Comedy
+44,WALL-E,Animation|Adventure|Sci-Fi
+45,Inside Out,Animation|Adventure|Comedy
+46,Frozen,Animation|Adventure|Comedy
+47,Moana,Animation|Adventure|Comedy
+48,Zootopia,Animation|Adventure|Comedy
+49,The Lion King,Animation|Adventure|Comedy
+50,Beauty and the Beast,Animation|Musical|Romance
+51,The Little Mermaid,Animation|Adventure|Comedy
+52,Aladdin,Animation|Adventure|Comedy
+53,Pocahontas,Animation|Adventure|Comedy
+54,Mulan,Animation|Adventure|Comedy
+55,Tarzan,Animation|Adventure|Comedy
+56,"Monsters, Inc.",Animation|Adventure|Comedy
+57,The Incredibles,Animation|Adventure|Comedy
+58,Cars,Animation|Adventure|Comedy
+59,Ratatouille,Animation|Adventure|Comedy
+60,Brave,Animation|Adventure|Comedy
+61,Coco,Animation|Adventure|Comedy
+62,Onward,Animation|Adventure|Comedy
+63,Soul,Animation|Adventure|Comedy
+64,Luca,Animation|Adventure|Comedy
+65,Turning Red,Animation|Adventure|Comedy
+66,Encanto,Animation|Adventure|Comedy
+67,Strange World,Animation|Adventure|Comedy
+68,Lightyear,Animation|Adventure|Comedy
+69,Elemental,Animation|Adventure|Comedy
+70,Wish,Animation|Adventure|Comedy
+71,The Princess and the Frog,Animation|Musical|Romance
+72,Tangled,Animation|Adventure|Comedy
+73,Wreck-It Ralph,Animation|Adventure|Comedy
+74,Big Hero 6,Animation|Adventure|Comedy
+75,Ralph Breaks the Internet,Animation|Adventure|Comedy
+76,Frozen II,Animation|Adventure|Comedy
+77,Raya and the Last Dragon,Animation|Adventure|Comedy
+78,Cruella,Animation|Drama|Fantasy
+79,Loki,Action|Adventure|Sci-Fi
+80,WandaVision,Drama|Fantasy|Romance
+81,The Falcon and the Winter Soldier,Action|Adventure|Sci-Fi
+82,What If...?,Action|Adventure|Sci-Fi
+83,Hawkeye,Action|Adventure|Sci-Fi
+84,Moon Knight,Action|Adventure|Sci-Fi
+85,Ms. Marvel,Action|Adventure|Sci-Fi
+86,She-Hulk,Action|Adventure|Sci-Fi
+87,Secret Invasion,Action|Adventure|Sci-Fi
+88,Loki Season 2,Action|Adventure|Sci-Fi
+89,The Marvels,Action|Adventure|Sci-Fi
+90,Ant-Man and the Wasp: Quantumania,Action|Adventure|Sci-Fi
+91,Guardians of the Galaxy Vol. 3,Action|Adventure|Sci-Fi
+92,Thor: Love and Thunder,Action|Adventure|Sci-Fi
+93,Doctor Strange in the Multiverse of Madness,Action|Adventure|Sci-Fi
+94,Black Widow,Action|Adventure|Sci-Fi
+95,Eternals,Action|Adventure|Sci-Fi
+96,Shang-Chi and the Legend of the Ten Rings,Action|Adventure|Sci-Fi
+97,Spider-Man: No Way Home,Action|Adventure|Sci-Fi
+98,Venom,Action|Sci-Fi
+99,Morbius,Action|Adventure|Sci-Fi
+100,Spider-Man: Into the Spider-Verse,Action|Adventure|Sci-Fi

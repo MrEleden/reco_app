@@ -1,0 +1,7 @@
+- model=deep_cf
+- train.learning_rate=0.0001
+- train.batch_size=512
+- model.dropout=0.1
+- train.weight_decay=0.0001
+- train.patience=5
+- train=production

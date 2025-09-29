@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/mvill/github/reco_app/mlruns/289158589426816555/800cfba30df84785b87b72a46b1f28a2/artifacts
+end_time: 1759137772293
+entry_point_name: ''
+experiment_id: '289158589426816555'
+lifecycle_stage: active
+run_id: 800cfba30df84785b87b72a46b1f28a2
+run_name: brawny-bat-522
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759137769293
+status: 3
+tags: []
+user_id: mavil

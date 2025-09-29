@@ -6,7 +6,7 @@ Minimal, production-minded PyTorch recommender. Start simple, scale with Hydra, 
 
 **🌐 Interactive Demo**: [https://huggingface.co/spaces/MrEleden/movie-reco-demo](https://huggingface.co/spaces/MrEleden/movie-reco-demo)
 
-Experience the recommendation system in your browser - no setup required!
+Experience the recommendation system in your browser - no setup required! (light versuib of the app)
 
 ---
 

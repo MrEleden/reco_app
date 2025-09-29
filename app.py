@@ -59,8 +59,8 @@ class MLflowModelManager:
 
             # Filter out runs without proper model names and prioritize good ones
             if not runs.empty:
-                # Prioritize runs with actual model names
-                good_runs = runs[runs["params.model"].notna() & (runs["params.model"] != "None")]
+                # Prioritize runs with actual model names (using correct parameter name)
+                good_runs = runs[runs["params.model.name"].notna() & (runs["params.model.name"] != "None")]
                 if not good_runs.empty:
                     return good_runs.head(10)  # Return top 10 good runs
                 else:
@@ -85,7 +85,10 @@ class MLflowModelManager:
         """Load a model from MLflow."""
         try:
             model_uri = f"runs:/{run_id}/model"
-            model = mlflow.pytorch.load_model(model_uri)
+            # Load model and ensure proper device handling
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            model = mlflow.pytorch.load_model(model_uri, map_location=device)
+            model.eval()  # Set to evaluation mode
             return model
         except Exception as e:
             logger.error(f"Error loading model {run_id}: {e}")
@@ -171,7 +174,7 @@ class MovieRecommendationDemo:
         model_options = []
 
         for idx, row in top_models.iterrows():
-            model_name = row.get("params.model", "Unknown")
+            model_name = row.get("params.model.name", "Unknown")
             rmse = row.get("metrics.val_rmse", "N/A")
             accuracy = row.get("metrics.val_accuracy", "N/A")
             run_id = row.get("run_id", "")
@@ -211,7 +214,7 @@ class MovieRecommendationDemo:
         st.sidebar.markdown("### ⚙️ Hyperparameters")
 
         # Get model name to determine fallback values
-        model_name = selected_model_info.get("params.model", "deep_cf")
+        model_name = selected_model_info.get("params.model.name", "deep_cf")
         if not model_name or model_name == "None":
             # Use fallback based on performance to guess model type
             rmse = selected_model_info.get("metrics.val_rmse", 0.35)
@@ -319,14 +322,19 @@ class MovieRecommendationDemo:
             # Create tensors
             user_tensor = torch.tensor([user_id] * len(movie_ids), dtype=torch.long)
             movie_tensor = torch.tensor(movie_ids, dtype=torch.long)
+            
+            # Move tensors to the same device as the model
+            device = next(self.model.parameters()).device
+            user_tensor = user_tensor.to(device)
+            movie_tensor = movie_tensor.to(device)
 
             # Generate predictions
             self.model.eval()
             with torch.no_grad():
                 scores = self.model(user_tensor, movie_tensor)
 
-            # Get top-K recommendations
-            scores_np = scores.squeeze().numpy()
+            # Get top-K recommendations (move to CPU for numpy conversion)
+            scores_np = scores.squeeze().cpu().numpy()
             top_indices = np.argsort(scores_np)[-num_recommendations:][::-1]
 
             recommendations = []
@@ -418,7 +426,7 @@ with torch.no_grad():
         accuracy_values = []
 
         for _, row in top_models.iterrows():
-            model_name = row.get("params.model", "Unknown")
+            model_name = row.get("params.model.name", "Unknown")
             rmse = row.get("metrics.val_rmse")
             accuracy = row.get("metrics.val_accuracy")
 

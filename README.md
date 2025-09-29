@@ -38,7 +38,7 @@ python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf   trai
 python -m mlflow ui --port 5000
 
 # 7) Demo app
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 ## Configuration (Hydra)

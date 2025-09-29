@@ -322,7 +322,7 @@ class MovieRecommendationDemo:
             # Create tensors
             user_tensor = torch.tensor([user_id] * len(movie_ids), dtype=torch.long)
             movie_tensor = torch.tensor(movie_ids, dtype=torch.long)
-            
+
             # Move tensors to the same device as the model
             device = next(self.model.parameters()).device
             user_tensor = user_tensor.to(device)

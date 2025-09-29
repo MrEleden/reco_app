@@ -11,9 +11,11 @@ reco_app/
 ├── train.py              # Baseline (pure PyTorch)
 ├── train_hydra.py        # Hydra + MLflow (+ Optuna)
 ├── app.py                # Streamlit demo
-├── check_mlflow.py       # MLflow summaries
 ├── requirements.txt
-└── conf/                 # Hydra configs (models/train/optimizer/sweeper)
+├── conf/                 # Hydra configs (models/train/optimizer/sweeper)
+├── scripts/              # Utility scripts (check_mlflow.py, etc.)
+├── weights/              # Model weights storage
+└── deployment/           # Deployment-specific files
 ```
 
 ## Quick Start
@@ -36,6 +38,9 @@ python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf   trai
 
 # 6) Inspect results (MLflow UI)
 python -m mlflow ui --port 5000
+
+# 6b) Quick MLflow summary
+python scripts/check_mlflow.py
 
 # 7) Demo app
 python -m streamlit run app.py

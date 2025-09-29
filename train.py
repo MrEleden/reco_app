@@ -17,7 +17,7 @@ from models import CollaborativeFilteringModel
 from data import RecommenderDataset, MovieLensDataLoader
 from losses import RecommenderLoss
 from metrics import RecommenderMetrics
-from utils import Logger, Timer, setup_seed
+from utils import Logger, TrainingTimer, setup_seed
 
 
 def train_epoch(model, train_loader, criterion, optimizer, device, metrics):
@@ -153,12 +153,13 @@ def main():
     val_metrics = RecommenderMetrics()
 
     # Training loop
-    timer = Timer()
+    timer = TrainingTimer()
+    timer.start_training()
     best_val_loss = float("inf")
     patience_counter = 0
 
     for epoch in range(args.epochs):
-        timer.start()
+        timer.start_epoch()
 
         # Train
         train_loss, train_metric_results = train_epoch(model, train_loader, criterion, optimizer, device, train_metrics)
@@ -166,7 +167,7 @@ def main():
         # Validate
         val_loss, val_metric_results = validate_epoch(model, val_loader, criterion, device, val_metrics)
 
-        epoch_time = timer.stop()
+        epoch_time = timer.end_epoch()
 
         # Log epoch results
         logger.log_epoch(epoch, args.epochs, train_loss, val_loss, epoch_time, val_metric_results)
@@ -193,7 +194,7 @@ def main():
             logger.info(f"Early stopping at epoch {epoch+1}")
             break
 
-    total_training_time = sum([timer.epoch_times[-i] for i in range(1, len(timer.epoch_times) + 1)])
+    total_training_time = timer.end_training()
     logger.log_training_end(best_val_loss, total_training_time)
 
 

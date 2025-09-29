@@ -10,12 +10,15 @@ PyTorch • Hydra • MLflow • Optuna • Streamlit
 reco_app/
 ├── train.py              # Baseline (pure PyTorch)
 ├── train_hydra.py        # Hydra + MLflow (+ Optuna)
-├── app.py                # Streamlit demo
-├── requirements.txt
-├── conf/                 # Hydra configs (models/train/optimizer/sweeper)
-├── scripts/              # Utility scripts (check_mlflow.py, etc.)
-├── weights/              # Model weights storage
-└── deployment/           # Deployment-specific files
+├── requirements.txt      # Core dependencies
+├── conf/                 # Hydra configurations
+├── apps/                 # Interactive applications
+│   ├── app.py           # Streamlit web app
+│   └── app_gradio.py    # Gradio demo app
+├── scripts/             # Utility scripts
+├── deployment/          # Deployment packages & configs
+├── weights/             # Model weights storage
+└── data/                # Dataset files
 ```
 
 ## Quick Start
@@ -42,8 +45,9 @@ python -m mlflow ui --port 5000
 # 6b) Quick MLflow summary
 python scripts/check_mlflow.py
 
-# 7) Demo app
-python -m streamlit run app.py
+# 7) Demo apps
+python apps/app.py          # Full-featured web app
+python apps/app_gradio.py          # Clean ML demo (HF Spaces ready)
 ```
 
 ## Configuration (Hydra)

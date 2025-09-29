@@ -1,0 +1,101 @@
+[2025-09-29 10:14:31,989][__main__][INFO] - Configuration:
+[2025-09-29 10:14:31,990][__main__][INFO] - model:
+  name: content_based
+  type: ContentBasedModel
+  genre_embedding_dim: 32
+  user_embedding_dim: 64
+  hidden_dims:
+  - 128
+  - 64
+  dropout: 0.3
+  activation: relu
+  description: Genre-based recommendations with user preferences
+train:
+  name: production
+  batch_size: 128
+  learning_rate: 0.005
+  weight_decay: 0.0001
+  epochs: 100
+  patience: 5
+  min_delta: 1.0e-05
+  optimizer:
+    type: adam
+    betas:
+    - 0.9
+    - 0.999
+    eps: 1.0e-08
+    amsgrad: true
+  scheduler:
+    type: cosine
+    T_max: 100
+    eta_min: 1.0e-06
+  loss:
+    type: bce
+    reduction: mean
+  validation:
+    val_ratio: 0.2
+    val_batch_size: 512
+    val_frequency: 1
+    early_stopping: true
+  metrics:
+  - rmse
+  - mae
+  - precision@5
+  - precision@10
+  - precision@20
+  - recall@5
+  - recall@10
+  - recall@20
+  - ndcg@10
+  - f1
+  top_k:
+  - 5
+  - 10
+  - 20
+  - 50
+data:
+  name: default
+  data_dir: data
+  raw_data_dir: data/raw
+  min_ratings_per_user: 5
+  min_ratings_per_movie: 5
+  rating_threshold: 3.0
+  negative_sampling: true
+  negative_sampling_ratio: 4
+  validation_ratio: 0.2
+  test_ratio: 0.1
+  seed: 42
+optimizer:
+  type: adam
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  amsgrad: false
+experiment:
+  name: movie_recommendation
+  tags:
+  - collaborative_filtering
+  - pytorch
+  notes: Training movie recommendation models with different configurations
+seed: 42
+device: auto
+mlflow:
+  tracking_uri: null
+  experiment_name: ${experiment.name}
+  enable: true
+  log_models: true
+  log_artifacts: true
+
+[2025-09-29 10:14:34,429][__main__][INFO] - MLflow run started: df01eb8a74d04e06a163fd0f9a62a494
+[2025-09-29 10:14:34,448][__main__][INFO] - Using device: cuda
+[2025-09-29 10:14:34,502][__main__][INFO] - Loading data...
+[2025-09-29 10:14:34,572][__main__][INFO] - Loaded 100836 user-movie interactions
+[2025-09-29 10:14:34,572][__main__][INFO] - Users: 610, Movies: 9742
+[2025-09-29 10:14:35,254][__main__][INFO] - Creating model: ContentBasedModel
+[2025-09-29 10:14:35,429][__main__][INFO] - Model created with 4,865 parameters
+[2025-09-29 10:14:40,429][__main__][INFO] - Starting training...
+[2025-09-29 10:14:46,848][__main__][INFO] - Epoch 1/100: Train Loss: 0.4705, Val Loss: 0.4668
+[2025-09-29 10:14:46,848][__main__][INFO] - Train Metrics: {'rmse': np.float64(0.38334758497089183), 'mae': 0.29517319798469543, 'accuracy': np.float64(0.8223900610043245), 'precision': np.float64(0.058823529411764705), 'recall': np.float64(4.0504688417684346e-05), 'f1': np.float64(8.095363380623748e-05)}
+[2025-09-29 10:14:46,848][__main__][INFO] - Val Metrics: {'rmse': np.float64(0.38179035353706237), 'mae': 0.29491138458251953, 'accuracy': np.float64(0.8225191663190599), 'precision': 0.0, 'recall': np.float64(0.0), 'f1': 0.0}
+[2025-09-29 10:14:47,094][__main__][INFO] - New best model saved: best_model_content_based.pth

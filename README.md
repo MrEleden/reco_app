@@ -49,8 +49,8 @@ python train_hydra.py model=hybrid train.epochs=5
 # 3️⃣ Multi-model comparison with automatic tracking
 python train_hydra.py -m model=collaborative,hybrid train.epochs=5
 
-# 4️⃣ Intelligent hyperparameter optimization with Optuna
-python train_hydra.py --config-name=optuna_test -m
+# 4️⃣ Production-ready hyperparameter optimization with Optuna
+python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf train=production hydra/sweeper=optuna_production
 
 # 📊 View comprehensive results dashboard  
 python check_mlflow.py && python -m mlflow ui --port 5000
@@ -68,14 +68,17 @@ python train_hydra.py model=deep_cf         # Deep learning
 **⚙️ Hydra Configuration**: No code changes needed
 ```bash  
 python train_hydra.py train=fast            # Quick 10-epoch training
-python train_hydra.py train=production      # Full 30-epoch training
+python train_hydra.py train=production      # Full 100-epoch training
 python train_hydra.py optimizer=sgd         # Change optimizer
 ```
 
 **🎯 Optuna Optimization**: Smart hyperparameter search
 ```bash
-python train_hydra.py --config-name=optuna_test -m     # Quick optimization
-python train_hydra.py --config-name=optuna_demo -m     # Full demo
+# Quick test optimization (6 trials)
+python train_hydra.py --config-name=optuna_test -m
+
+# Production optimization (100 trials, 4 parallel jobs)
+python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf train=production hydra/sweeper=optuna_production
 ```
 
 **🔬 MLflow Tracking**: Every experiment automatically logged
@@ -117,33 +120,46 @@ best_model, run_id = selector.load_best_model('val_rmse')
 
 ## 🎯 **Optuna Hyperparameter Optimization**
 
-**Intelligent parameter search integrated with Hydra and MLflow:**
+**Production-ready intelligent parameter search integrated with Hydra and MLflow:**
 
+### **🚀 Quick Start Examples**
 ```bash
-# 🚀 Quick optimization test (6 trials)
+# 🧪 Quick optimization test (6 trials)
 python train_hydra.py --config-name=optuna_test -m
+
+# 🏭 Production multi-model optimization (100 trials, 4 parallel jobs)
+python train_hydra.py -m model=collaborative,content_based,hybrid,deep_cf train=production hydra/sweeper=optuna_production
 
 # 📊 All trials automatically tracked in MLflow
 python check_mlflow.py  # View results
 ```
 
+### **🏆 Production Configuration Features**
+- **100 Intelligent Trials**: TPE sampler with smart parameter exploration
+- **4 Parallel Jobs**: Faster optimization using multiple CPU cores
+- **Multi-Model Search**: Optimizes all 4 models simultaneously
+- **Automatic MLflow Tracking**: Every trial logged with hyperparameters and results
+- **Production Training**: Uses full 100-epoch training with early stopping
+
+### **🔧 Optimized Parameters**
+| Parameter | Search Space | Strategy |
+|-----------|--------------|----------|
+| `model` | collaborative, content_based, hybrid, deep_cf | Intelligent model selection |
+| `learning_rate` | 0.0001 → 0.05 | Log-scale discrete choices |
+| `batch_size` | 128, 256, 512, 1024 | Memory-efficient powers of 2 |
+| `dropout` | 0.1 → 0.5 | Regularization optimization |
+| `weight_decay` | 0.0001 → 0.01 | Log-scale regularization |
+| `patience` | 5 → 15 epochs | Early stopping optimization |
+
 ### **🧠 Smart Search vs Grid Search**
-| Approach | Trials | Time | Result Quality |
-|----------|--------|------|----------------|
-| **🎯 Optuna** | 20 trials | ⚡ Efficient | 🏆 Optimal |
-| 📊 Grid Search | 64 trials | ⏰ Exhaustive | ✅ Complete |
-| 🎲 Random | 20 trials | ⚡ Fast | 📊 Variable |
+| Approach | Trials | Time | Result Quality | Parallel |
+|----------|--------|------|----------------|----------|
+| **🎯 Optuna Production** | 100 trials | ⚡ Efficient | 🏆 Optimal | ✅ 4 jobs |
+| **🧪 Optuna Quick** | 6 trials | ⚡ Ultra-fast | 📊 Good | ❌ 1 job |
+| 📊 Grid Search | 1000+ trials | ⏰ Exhaustive | ✅ Complete | ❌ Sequential |
+| 🎲 Random | 100 trials | ⚡ Fast | 📊 Variable | ❌ Sequential |
 
-### **🔧 Optuna Configuration**
-```yaml
-# conf/hydra/sweeper/optuna_quick.yaml
-search_space:
-  train.learning_rate: 0.001,0.005,0.01,0.05
-  train.batch_size: 256,512  
-  model.embedding_dim: 32,50,64
-```
-
-**🔄 Optuna automatically explores the most promising parameter combinations**
+**🔄 Optuna's TPE sampler automatically explores the most promising parameter combinations based on previous trial results**
 
 ## ⚙️ **Hydra Configuration Magic**
 
@@ -237,13 +253,14 @@ reco_app/
 │   │   └── deep_cf.yaml              # Deep learning model
 │   ├── train/                        # 🚀 Training configurations
 │   │   ├── fast.yaml                 # Quick experiments (10 epochs)
-│   │   └── production.yaml           # Full training (30 epochs)
+│   │   └── production.yaml           # Full training (100 epochs)
 │   ├── optimizer/                    # ⚡ Optimizer settings
 │   │   ├── adam.yaml                 # Adaptive learning
 │   │   └── sgd.yaml                  # Stochastic gradient descent
-│   └── hydra/sweeper/                # 🎯 Optuna configurations
+│   └── hydra/sweeper/                # 🎯 Optuna HPO configurations
 │       ├── optuna_quick.yaml         # Quick HPO (6 trials)
-│       └── optuna_comprehensive.yaml # Full HPO (50 trials)
+│       ├── optuna_comprehensive.yaml # Standard HPO (50 trials)
+│       └── optuna_production.yaml    # Production HPO (100 trials, 4 jobs)
 │
 ├── 🧠 models/                         # 🔥 PYTORCH Model Architectures
 │   ├── collaborative_filtering.py    # Matrix factorization

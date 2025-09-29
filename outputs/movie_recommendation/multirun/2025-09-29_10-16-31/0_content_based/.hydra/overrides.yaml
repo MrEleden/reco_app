@@ -1,0 +1,7 @@
+- model=content_based
+- train.learning_rate=0.005
+- train.batch_size=128
+- model.dropout=0.3
+- train.weight_decay=0.0001
+- train.patience=5
+- train=production

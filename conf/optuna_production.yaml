@@ -1,0 +1,45 @@
+# Production Optuna Configuration for Multi-Model Optimization
+# Usage: python train_hydra.py --config-name=optuna_production -m
+
+defaults:
+  - train: production  # Use production training settings as base
+  - data: default
+  - optimizer: adam
+  - override hydra/sweeper: optuna_production
+  - _self_
+
+# Experiment settings
+experiment:
+  name: "production_optuna_optimization"
+  tags: ["production", "optuna", "multi_model", "hyperparameter_optimization"]
+  notes: "Production-grade Optuna optimization across all model architectures"
+
+# Production training settings (based on your production config)
+train:
+  epochs: 30  # Production-level epochs
+  patience: 8
+  early_stopping: true
+  batch_size: 256  # Will be optimized by Optuna
+  learning_rate: 0.005  # Will be optimized by Optuna
+
+# Global settings
+seed: 42
+device: "auto"
+
+# MLflow integration for production tracking
+mlflow:
+  tracking_uri: null
+  experiment_name: "${experiment.name}"
+  enable: true
+  log_models: true  # Log best models for production
+  log_artifacts: true
+
+# Hydra settings for production runs
+hydra:
+  run:
+    dir: "outputs/${experiment.name}/${now:%Y-%m-%d_%H-%M-%S}"
+  sweep:
+    dir: "outputs/${experiment.name}/multirun/${now:%Y-%m-%d_%H-%M-%S}"
+    subdir: "trial_${hydra:job.num}_${model}"
+  job:
+    name: "${experiment.name}_${model}_trial"

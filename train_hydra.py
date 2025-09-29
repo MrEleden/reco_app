@@ -162,10 +162,15 @@ def train_epoch(model, data_loader, criterion, optimizer, device, metrics):
     metrics.reset()
 
     for batch_idx, (user_ids, movie_ids, ratings) in enumerate(data_loader):
-        user_ids, movie_ids, ratings = user_ids.to(device), movie_ids.to(device), ratings.to(device)
+        # Ensure proper dtypes for all tensors
+        user_ids = user_ids.to(device, dtype=torch.long)
+        movie_ids = movie_ids.to(device, dtype=torch.long)
+        ratings = ratings.to(device, dtype=torch.float32)  # Ensure float32 for loss compatibility
 
         optimizer.zero_grad()
         predictions = model(user_ids, movie_ids)
+        # Ensure predictions are also float32
+        predictions = predictions.float()
         loss = criterion(predictions.squeeze(), ratings)
         loss.backward()
         optimizer.step()
@@ -184,9 +189,14 @@ def validate_epoch(model, data_loader, criterion, device, metrics):
 
     with torch.no_grad():
         for user_ids, movie_ids, ratings in data_loader:
-            user_ids, movie_ids, ratings = user_ids.to(device), movie_ids.to(device), ratings.to(device)
+            # Ensure proper dtypes for all tensors
+            user_ids = user_ids.to(device, dtype=torch.long)
+            movie_ids = movie_ids.to(device, dtype=torch.long)
+            ratings = ratings.to(device, dtype=torch.float32)  # Ensure float32 for loss compatibility
 
             predictions = model(user_ids, movie_ids)
+            # Ensure predictions are also float32
+            predictions = predictions.float()
             loss = criterion(predictions.squeeze(), ratings)
 
             total_loss += loss.item()
@@ -270,6 +280,7 @@ def main(cfg: DictConfig) -> float:
     # Create model
     log.info(f"Creating model: {cfg.model.type}")
     model = create_model(cfg.model, config["n_users"], config["n_movies"])
+    model = model.float()  # Ensure model parameters are float32
     model.to(device)
 
     total_params = sum(p.numel() for p in model.parameters())

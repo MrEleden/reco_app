@@ -54,7 +54,7 @@ python -m mlflow ui --port 5000
 python scripts/check_mlflow.py
 
 # 7) Demo apps
-python apps/app.py          # Full-featured web app
+python -m streamlit run app.py         # Full-featured web app
 python apps/app_gradio.py          # Clean ML demo (HF Spaces ready)
 ```
 

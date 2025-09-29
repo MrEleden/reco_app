@@ -175,54 +175,29 @@ class MLflowModelSelector:
 
     def compare_models(self) -> pd.DataFrame:
         """Compare all models across different metrics."""
-        # Set the experiment explicitly
-        mlflow.set_experiment(self.experiment_name)
         experiment = mlflow.get_experiment_by_name(self.experiment_name)
-        
         if experiment is None:
             print(f"Experiment '{self.experiment_name}' not found!")
             return pd.DataFrame()
 
-        print(f"Found experiment: {experiment.name} (ID: {experiment.experiment_id})")
-        
-        # Search for all runs in this experiment
-        runs = mlflow.search_runs(
-            experiment_ids=[experiment.experiment_id], 
-            order_by=["start_time DESC"],
-            max_results=100
-        )
+        runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id], order_by=["start_time DESC"])
 
         if runs.empty:
             print("No runs found!")
             return pd.DataFrame()
 
-        print(f"Found {len(runs)} runs")
-
         # Create comparison dataframe
         comparison_data = []
         for _, run in runs.iterrows():
-            # Try multiple ways to get model type with better fallback
-            model_type = (
-                run.get("tags.model_type") or 
-                run.get("params.model.name") or 
-                run.get("params.model_name") or
-                self._extract_model_from_run_name(run.get("tags.mlflow.runName", "")) or
-                "Unknown"
-            )
-            
-            # Get run status
-            status = run.get("status", "UNKNOWN")
-            
-            # Only include completed runs with metrics
-            if status == "FINISHED" and not pd.isna(run.get("metrics.val_rmse")):
-                comparison_data.append(
-                    {
-                        "model_type": model_type,
-                        "run_id": run["run_id"][:8],  # Shortened for display
-                        "full_run_id": run["run_id"],  # Keep full ID for reference
-                        "val_rmse": run.get("metrics.val_rmse", float("inf")),
-                        "val_mae": run.get("metrics.val_mae", float("inf")),
-                        "val_accuracy": run.get("metrics.val_accuracy", 0.0),
+            model_type = run.get("tags.model_type", "Unknown")
+
+            comparison_data.append(
+                {
+                    "model_type": model_type,
+                    "run_id": run["run_id"][:8],  # Shortened for display
+                    "val_rmse": run.get("metrics.val_rmse", float("inf")),
+                    "val_mae": run.get("metrics.val_mae", float("inf")),
+                    "val_accuracy": run.get("metrics.val_accuracy", 0.0),
                     "val_f1": run.get("metrics.val_f1", 0.0),
                     "status": run["status"],
                     "duration": run.get("metrics.training_time", 0.0),
@@ -230,25 +205,6 @@ class MLflowModelSelector:
             )
 
         return pd.DataFrame(comparison_data).sort_values("val_rmse")
-
-    def _extract_model_from_run_name(self, run_name: str) -> str:
-        """Extract model type from run name like 'hybrid_movie_recommendation'."""
-        if not run_name:
-            return ""
-        
-        # Split by underscore and take first part
-        parts = run_name.split("_")
-        if len(parts) > 0:
-            model_name = parts[0].lower()
-            # Map known model names
-            model_mapping = {
-                "collaborative": "collaborative",
-                "content": "content_based", 
-                "hybrid": "hybrid",
-                "deep": "deep_cf"
-            }
-            return model_mapping.get(model_name, model_name)
-        return ""
 
     def get_model_artifacts(self, run_id: str) -> list:
         """Get all artifacts for a specific run."""

@@ -1,0 +1,59 @@
+# Hugging Face Space ignore file
+# Prevents uploading large unnecessary files
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large training artifacts (don't upload these)
+mlruns/
+logs/
+outputs/
+results/
+*.log
+
+# Large model files (pre-trained models - too big for HF Spaces)
+best_model_*.pth
+weights/*.pth
+models/*.pth
+
+# Git
+.git/
+.gitignore
+
+# Deployment folders (other versions)
+deployment/
+apps/
+movie-reco-demo/
+hf_gradio_deploy/
+.streamlit/
+
+# Hydra config outputs
+conf/
+config/
+outputs/
+
+# Training scripts (not needed for inference)
+train.py
+train_hydra.py
+inference.py
+
+# Other unnecessary files
+*.pkl
+*.joblib
+*.csv.gz

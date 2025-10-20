@@ -310,18 +310,41 @@ class MovieRecommendationSystem:
 print("🚀 Initializing Movie Recommendation System (Lightweight HF Version)...")
 recommender = MovieRecommendationSystem()
 
-# Create Gradio interface
+# Create Gradio interface with proper dark text theme
+custom_theme = gr.themes.Default(
+    primary_hue="indigo",
+    secondary_hue="purple",
+).set(
+    body_text_color="*neutral_800",
+    body_text_color_dark="*neutral_100",
+    block_label_text_color="*neutral_800",
+    block_label_text_color_dark="*neutral_100",
+    button_primary_text_color="white",
+    button_secondary_text_color="*neutral_800",
+)
+
 with gr.Blocks(
     title="🎬 Movie Recommendations",
-    theme=gr.themes.Soft(),
+    theme=custom_theme,
+    css="""
+        .gradio-container {
+            font-family: 'Inter', sans-serif;
+        }
+        .markdown-text {
+            color: #1f2937 !important;
+        }
+        .dark .markdown-text {
+            color: #f3f4f6 !important;
+        }
+    """
 ) as demo:
 
     gr.HTML("""
         <div style="text-align: center; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); 
-                    color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
-            <h1>🎬 Movie Recommendation System</h1>
-            <p>Discover your next favorite movie with AI-powered recommendations!</p>
-            <p><em>Lightweight version optimized for Hugging Face Spaces</em></p>
+                    color: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h1 style="margin: 0; font-size: 2.5rem;">🎬 Movie Recommendation System</h1>
+            <p style="margin: 0.5rem 0; font-size: 1.1rem;">Discover your next favorite movie with AI-powered recommendations!</p>
+            <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;"><em>Lightweight version optimized for Hugging Face Spaces</em></p>
         </div>
     """)
 
@@ -335,7 +358,10 @@ with gr.Blocks(
                 rec_button = gr.Button("🎬 Get Recommendations!", variant="primary", size="lg")
 
             with gr.Column(scale=2):
-                rec_output = gr.Markdown(value="👆 Enter your user ID and click the button to get started!")
+                rec_output = gr.Markdown(
+                    value="👆 Enter your user ID and click the button to get started!",
+                    elem_classes=["markdown-text"]
+                )
 
         rec_button.click(fn=recommender.get_user_recommendations, inputs=[user_input, num_recs], outputs=rec_output)
 
@@ -348,7 +374,10 @@ with gr.Blocks(
                 profile_button = gr.Button("👤 Show Profile", variant="secondary", size="lg")
 
             with gr.Column(scale=2):
-                profile_output = gr.Markdown(value="Select a user ID to see their preferences")
+                profile_output = gr.Markdown(
+                    value="Select a user ID to see their preferences",
+                    elem_classes=["markdown-text"]
+                )
 
         profile_button.click(fn=recommender.get_user_profile, inputs=profile_user_input, outputs=profile_output)
 
@@ -361,7 +390,10 @@ with gr.Blocks(
                 search_button = gr.Button("🔍 Search", variant="secondary", size="lg")
 
             with gr.Column(scale=2):
-                search_output = gr.Markdown(value="Enter a movie title or genre to search")
+                search_output = gr.Markdown(
+                    value="Enter a movie title or genre to search",
+                    elem_classes=["markdown-text"]
+                )
 
         search_button.click(fn=recommender.search_movies, inputs=search_input, outputs=search_output)
 
@@ -369,7 +401,10 @@ with gr.Blocks(
         gr.Markdown("### Discover popular and highly-rated movies")
 
         trending_button = gr.Button("🔥 Show Popular Movies", variant="secondary", size="lg")
-        trending_output = gr.Markdown(value="Click the button to see popular movies!")
+        trending_output = gr.Markdown(
+            value="Click the button to see popular movies!",
+            elem_classes=["markdown-text"]
+        )
 
         trending_button.click(fn=recommender.get_popular_movies, outputs=trending_output)
 

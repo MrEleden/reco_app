@@ -392,15 +392,25 @@ class MovieRecommendationDemo:
 
                 matplotlib.use("Agg")  # Use non-interactive backend
 
-                fig, ax = plt.subplots(figsize=(10, 6))
+                fig, ax = plt.subplots(figsize=(10, 6), facecolor='white')
+                ax.set_facecolor('white')
+                
                 bars = ax.barh(range(len(titles)), scores)
                 ax.set_yticks(range(len(titles)))
-                ax.set_yticklabels(titles)
-                ax.set_xlabel("Recommendation Score")
-                ax.set_title(f"Top {num_recommendations} Movies for User {user_id}")
+                ax.set_yticklabels(titles, fontsize=9, color='#1f2937')
+                ax.set_xlabel("Recommendation Score", fontsize=10, color='#1f2937')
+                ax.set_title(f"Top {num_recommendations} Movies for User {user_id}", 
+                           fontsize=12, fontweight='bold', color='#1f2937')
                 ax.invert_yaxis()
+                
+                # Style the axes
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                ax.spines['left'].set_color('#e5e7eb')
+                ax.spines['bottom'].set_color('#e5e7eb')
+                ax.tick_params(colors='#1f2937')
 
-                # Color bars
+                # Color bars with gradient
                 for i, bar in enumerate(bars):
                     bar.set_color(plt.cm.viridis(i / len(bars)))
 
